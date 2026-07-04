@@ -1,6 +1,7 @@
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
 import ProductTable from "@/components/admin/products/ProductTable";
+import ProductToolbar from "@/components/admin/products/ProductToolbar";
 
 export default function ProductosPage() {
   return (
@@ -26,7 +27,9 @@ export default function ProductosPage() {
 
           </div>
 
-          <ProductTable />
+          <ProductToolbar />
+
+<ProductTable />
 
         </div>
 
