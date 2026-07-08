@@ -1,21 +1,75 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
-import { useProductStore } from "@/store/productStore";
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string;
+  category: string;
+}
 
 export default function ProductTable() {
-  const products = useProductStore((state) => state.products);
-  const deleteProduct = useProductStore((state) => state.deleteProduct);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  function handleDelete(id: string, name: string) {
-    const confirmDelete = window.confirm(
-      `¿Deseas eliminar el producto "${name}"?`
+  async function loadProducts() {
+    try {
+      const response = await fetch("/api/productos");
+      const data = await response.json();
+
+      setProducts(data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleDelete(id: string) {
+    const confirmar = confirm(
+      "¿Seguro que deseas eliminar este producto?"
     );
 
-    if (!confirmDelete) return;
+    if (!confirmar) return;
 
-    deleteProduct(id);
+    try {
+      const response = await fetch("/api/productos", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al eliminar");
+      }
+
+      await loadProducts();
+
+      alert("✅ Producto eliminado");
+    } catch (error) {
+      console.error(error);
+      alert("❌ No se pudo eliminar el producto");
+    }
+  }
+
+  useEffect(() => {
+    loadProducts();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 text-center text-white">
+        Cargando productos...
+      </div>
+    );
   }
 
   return (
@@ -33,7 +87,55 @@ export default function ProductTable() {
         </thead>
 
         <tbody>
-          {products.length === 0 ? (
+          {products.map((product) => (
+            <tr
+              key={product.id}
+              className="border-t border-neutral-800 hover:bg-neutral-800/40"
+            >
+              <td className="p-4">
+                <Image
+                  src={product.image}
+                  alt={product.name}
+                  width={70}
+                  height={70}
+                  className="rounded-lg"
+                />
+              </td>
+
+              <td className="p-4 font-semibold text-white">
+                {product.name}
+              </td>
+
+              <td className="p-4 text-neutral-300">
+                {product.category}
+              </td>
+
+              <td className="p-4 text-yellow-500">
+                US$ {product.price}
+              </td>
+
+              <td className="p-4 text-white">
+                {product.stock}
+              </td>
+
+              <td className="p-4">
+                <div className="flex justify-center gap-3">
+                  <button className="rounded-lg bg-blue-600 p-2 hover:bg-blue-500">
+                    <Pencil size={18} />
+                  </button>
+
+                  <button
+                    onClick={() => handleDelete(product.id)}
+                    className="rounded-lg bg-red-600 p-2 hover:bg-red-500"
+                  >
+                    <Trash2 size={18} />
+                  </button>
+                </div>
+              </td>
+            </tr>
+          ))}
+
+          {products.length === 0 && (
             <tr>
               <td
                 colSpan={6}
@@ -42,62 +144,6 @@ export default function ProductTable() {
                 No hay productos registrados.
               </td>
             </tr>
-          ) : (
-            products.map((product) => (
-              <tr
-                key={product.id}
-                className="border-t border-neutral-800 transition hover:bg-neutral-800/40"
-              >
-                <td className="p-4">
-                  <Image
-                    src={product.image}
-                    alt={product.name}
-                    width={70}
-                    height={70}
-                    className="rounded-lg object-cover"
-                  />
-                </td>
-
-                <td className="p-4 font-semibold text-white">
-                  {product.name}
-                </td>
-
-                <td className="p-4 text-neutral-300">
-                  {product.category}
-                </td>
-
-                <td className="p-4 font-semibold text-yellow-500">
-                  US$ {product.price.toFixed(2)}
-                </td>
-
-                <td className="p-4 text-white">
-                  {product.stock}
-                </td>
-
-                <td className="p-4">
-                  <div className="flex justify-center gap-3">
-
-                    <button
-                      className="rounded-lg bg-blue-600 p-2 transition hover:bg-blue-500"
-                      title="Editar"
-                    >
-                      <Pencil size={18} />
-                    </button>
-
-                    <button
-                      onClick={() =>
-                        handleDelete(product.id, product.name)
-                      }
-                      className="rounded-lg bg-red-600 p-2 transition hover:bg-red-500"
-                      title="Eliminar"
-                    >
-                      <Trash2 size={18} />
-                    </button>
-
-                  </div>
-                </td>
-              </tr>
-            ))
           )}
         </tbody>
       </table>
