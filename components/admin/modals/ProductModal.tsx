@@ -2,14 +2,26 @@
 
 import ProductForm from "../products/form/ProductForm";
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string;
+  category: string;
+}
+
 interface ProductModalProps {
   open: boolean;
   onClose: () => void;
+  product?: Product | null;
 }
 
 export default function ProductModal({
   open,
   onClose,
+  product,
 }: ProductModalProps) {
   if (!open) return null;
 
@@ -20,7 +32,7 @@ export default function ProductModal({
         <div className="mb-8 flex items-center justify-between">
 
           <h1 className="text-3xl font-bold text-yellow-500">
-            Nuevo Producto
+            {product ? "Editar Producto" : "Nuevo Producto"}
           </h1>
 
           <button
@@ -32,7 +44,10 @@ export default function ProductModal({
 
         </div>
 
-        <ProductForm onSuccess={onClose} />
+        <ProductForm
+          product={product}
+          onSuccess={onClose}
+        />
 
       </div>
     </div>

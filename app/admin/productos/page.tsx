@@ -8,8 +8,35 @@ import ProductTable from "@/components/admin/products/ProductTable";
 import ProductToolbar from "@/components/admin/products/ProductToolbar";
 import ProductModal from "@/components/admin/modals/ProductModal";
 
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string;
+  category: string;
+}
+
 export default function ProductosPage() {
   const [openModal, setOpenModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] =
+    useState<Product | null>(null);
+
+  function handleNewProduct() {
+    setSelectedProduct(null);
+    setOpenModal(true);
+  }
+
+  function handleEditProduct(product: Product) {
+    setSelectedProduct(product);
+    setOpenModal(true);
+  }
+
+  function handleCloseModal() {
+    setSelectedProduct(null);
+    setOpenModal(false);
+  }
 
   return (
     <main className="flex min-h-screen bg-black">
@@ -24,14 +51,17 @@ export default function ProductosPage() {
           </h1>
 
           <ProductToolbar
-            onNewProduct={() => setOpenModal(true)}
+            onNewProduct={handleNewProduct}
           />
 
-          <ProductTable />
+          <ProductTable
+            onEdit={handleEditProduct}
+          />
 
           <ProductModal
             open={openModal}
-            onClose={() => setOpenModal(false)}
+            product={selectedProduct}
+            onClose={handleCloseModal}
           />
         </div>
       </div>

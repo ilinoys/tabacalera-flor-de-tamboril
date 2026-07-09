@@ -1,15 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+interface Product {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  image: string;
+  category: string;
+}
 
 interface ProductFormProps {
+  product?: Product | null;
   onSuccess?: () => void;
 }
 
-export default function ProductForm({ onSuccess }: ProductFormProps) {
+export default function ProductForm({
+  product: editingProduct,
+  onSuccess,
+}: ProductFormProps) {
   const [loading, setLoading] = useState(false);
 
   const [product, setProduct] = useState({
+    id: "",
     name: "",
     description: "",
     category: "Premium",
@@ -17,15 +32,37 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
     stock: "",
   });
 
+  useEffect(() => {
+    if (editingProduct) {
+      setProduct({
+        id: editingProduct.id,
+        name: editingProduct.name,
+        description: editingProduct.description,
+        category: editingProduct.category,
+        price: editingProduct.price.toString(),
+        stock: editingProduct.stock.toString(),
+      });
+    } else {
+      setProduct({
+        id: "",
+        name: "",
+        description: "",
+        category: "Premium",
+        price: "",
+        stock: "",
+      });
+    }
+  }, [editingProduct]);
+
   function handleChange(
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) {
-    setProduct({
-      ...product,
+    setProduct((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   }
 
   async function handleSubmit(e: React.FormEvent) {
@@ -35,7 +72,7 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
 
     try {
       const response = await fetch("/api/productos", {
-        method: "POST",
+        method: editingProduct ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
@@ -46,9 +83,14 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
         throw new Error("Error al guardar");
       }
 
-      alert("✅ Producto guardado correctamente");
+      alert(
+        editingProduct
+          ? "✅ Producto actualizado correctamente"
+          : "✅ Producto guardado correctamente"
+      );
 
       setProduct({
+        id: "",
         name: "",
         description: "",
         category: "Premium",
@@ -68,7 +110,6 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-8">
       <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
-
         <input
           name="name"
           value={product.name}
@@ -114,11 +155,9 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
           placeholder="Stock"
           className="w-full rounded-xl border border-neutral-700 bg-black p-4 text-white"
         />
-
       </div>
 
       <div className="flex justify-end gap-4">
-
         <button
           type="button"
           onClick={onSuccess}
@@ -132,9 +171,10 @@ export default function ProductForm({ onSuccess }: ProductFormProps) {
           disabled={loading}
           className="rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50"
         >
-          {loading ? "Guardando..." : "Guardar Producto"}
+          {editingProduct
+            ? "Actualizar Producto"
+            : "Guardar Producto"}
         </button>
-
       </div>
     </form>
   );

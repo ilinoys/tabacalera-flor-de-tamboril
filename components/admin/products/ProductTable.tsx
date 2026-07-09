@@ -14,7 +14,13 @@ interface Product {
   category: string;
 }
 
-export default function ProductTable() {
+interface ProductTableProps {
+  onEdit: (product: Product) => void;
+}
+
+export default function ProductTable({
+  onEdit,
+}: ProductTableProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -120,9 +126,12 @@ export default function ProductTable() {
 
               <td className="p-4">
                 <div className="flex justify-center gap-3">
-                  <button className="rounded-lg bg-blue-600 p-2 hover:bg-blue-500">
-                    <Pencil size={18} />
-                  </button>
+                  <button
+  onClick={() => onEdit(product)}
+  className="rounded-lg bg-blue-600 p-2 hover:bg-blue-500"
+>
+  <Pencil size={18} />
+</button>
 
                   <button
                     onClick={() => handleDelete(product.id)}
