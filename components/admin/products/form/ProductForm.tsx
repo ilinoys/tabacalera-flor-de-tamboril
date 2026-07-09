@@ -1,6 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { ImagePlus, Upload } from "lucide-react";
+import { uploadProductImage } from "@/services/uploadService";
 
 interface Product {
   id: string;
@@ -17,42 +19,47 @@ interface ProductFormProps {
   onSuccess?: () => void;
 }
 
+const emptyProduct = {
+  id: "",
+  name: "",
+  description: "",
+  category: "Premium",
+  price: "",
+  stock: "",
+  image: "",
+};
+
+function getInitialProduct(product?: Product | null) {
+  if (!product) return emptyProduct;
+
+  return {
+    id: product.id,
+    name: product.name,
+    description: product.description,
+    category: product.category,
+    price: product.price.toString(),
+    stock: product.stock.toString(),
+    image: product.image,
+  };
+}
+
 export default function ProductForm({
   product: editingProduct,
   onSuccess,
 }: ProductFormProps) {
   const [loading, setLoading] = useState(false);
-
-  const [product, setProduct] = useState({
-    id: "",
-    name: "",
-    description: "",
-    category: "Premium",
-    price: "",
-    stock: "",
-  });
+  const [selectedImageFile, setSelectedImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState(editingProduct?.image ?? "");
+  const [product, setProduct] = useState(() => getInitialProduct(editingProduct));
+  const imagePreviewUrlRef = useRef<string | null>(null);
 
   useEffect(() => {
-    if (editingProduct) {
-      setProduct({
-        id: editingProduct.id,
-        name: editingProduct.name,
-        description: editingProduct.description,
-        category: editingProduct.category,
-        price: editingProduct.price.toString(),
-        stock: editingProduct.stock.toString(),
-      });
-    } else {
-      setProduct({
-        id: "",
-        name: "",
-        description: "",
-        category: "Premium",
-        price: "",
-        stock: "",
-      });
-    }
-  }, [editingProduct]);
+    return () => {
+      if (imagePreviewUrlRef.current) {
+        URL.revokeObjectURL(imagePreviewUrlRef.current);
+      }
+    };
+  }, []);
 
   function handleChange(
     e: React.ChangeEvent<
@@ -65,18 +72,48 @@ export default function ProductForm({
     }));
   }
 
+  function handleImageChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Selecciona un archivo de imagen válido");
+      e.target.value = "";
+      return;
+    }
+
+    if (imagePreviewUrlRef.current) {
+      URL.revokeObjectURL(imagePreviewUrlRef.current);
+    }
+
+    const objectUrl = URL.createObjectURL(file);
+    imagePreviewUrlRef.current = objectUrl;
+
+    setSelectedImageFile(file);
+    setImagePreview(objectUrl);
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-
     setLoading(true);
 
     try {
+      let imageUrl = product.image;
+
+      if (selectedImageFile) {
+        imageUrl = await uploadProductImage(selectedImageFile);
+      }
+
       const response = await fetch("/api/productos", {
         method: editingProduct ? "PUT" : "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(product),
+        body: JSON.stringify({
+          ...product,
+          image: imageUrl,
+        }),
       });
 
       if (!response.ok) {
@@ -85,23 +122,23 @@ export default function ProductForm({
 
       alert(
         editingProduct
-          ? "✅ Producto actualizado correctamente"
-          : "✅ Producto guardado correctamente"
+          ? "Producto actualizado correctamente"
+          : "Producto guardado correctamente"
       );
 
-      setProduct({
-        id: "",
-        name: "",
-        description: "",
-        category: "Premium",
-        price: "",
-        stock: "",
-      });
+      setProduct(emptyProduct);
+      setSelectedImageFile(null);
+      setImagePreview("");
+
+      if (imagePreviewUrlRef.current) {
+        URL.revokeObjectURL(imagePreviewUrlRef.current);
+        imagePreviewUrlRef.current = null;
+      }
 
       onSuccess?.();
     } catch (error) {
       console.error(error);
-      alert("❌ Error al guardar el producto");
+      alert("Error al guardar el producto");
     } finally {
       setLoading(false);
     }
@@ -157,6 +194,51 @@ export default function ProductForm({
         />
       </div>
 
+      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
+        <h2 className="mb-6 text-2xl font-bold text-yellow-500">
+          Imagen del producto
+        </h2>
+
+        <label className="flex min-h-64 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-700 bg-black p-6 text-center transition hover:border-yellow-500">
+          {imagePreview ? (
+            <div
+              className="h-64 w-full rounded-xl bg-cover bg-center"
+              style={{
+                backgroundImage: `url(${imagePreview})`,
+              }}
+              aria-label="Vista previa de la imagen del producto"
+            />
+          ) : (
+            <div>
+              <ImagePlus className="mx-auto text-yellow-500" size={42} />
+
+              <p className="mt-4 text-lg font-semibold text-white">
+                Selecciona una imagen
+              </p>
+
+              <p className="mt-2 text-neutral-400">
+                Se subirá a Supabase Storage al guardar
+              </p>
+            </div>
+          )}
+
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
+            disabled={loading}
+            className="sr-only"
+          />
+        </label>
+
+        {selectedImageFile && (
+          <p className="mt-3 flex items-center gap-2 text-sm text-neutral-300">
+            <Upload size={16} />
+            {selectedImageFile.name}
+          </p>
+        )}
+      </div>
+
       <div className="flex justify-end gap-4">
         <button
           type="button"
@@ -171,9 +253,13 @@ export default function ProductForm({
           disabled={loading}
           className="rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50"
         >
-          {editingProduct
-            ? "Actualizar Producto"
-            : "Guardar Producto"}
+          {loading
+            ? selectedImageFile
+              ? "Subiendo imagen..."
+              : "Guardando..."
+            : editingProduct
+              ? "Actualizar Producto"
+              : "Guardar Producto"}
         </button>
       </div>
     </form>
