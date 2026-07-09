@@ -2,12 +2,14 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   getProducts,
   createProduct,
+  updateProduct,
   deleteProduct,
 } from "@/services/productService";
 
 export async function GET() {
   try {
     const products = await getProducts();
+
     return NextResponse.json(products);
   } catch (error) {
     console.error(error);
@@ -36,12 +38,42 @@ export async function POST(req: NextRequest) {
       featured: data.featured ?? false,
     });
 
-    return NextResponse.json(product, { status: 201 });
+    return NextResponse.json(product, {
+      status: 201,
+    });
   } catch (error) {
     console.error(error);
 
     return NextResponse.json(
       { error: "Error al crear producto" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const data = await req.json();
+
+    const product = await updateProduct(data.id, {
+      name: data.name,
+      description: data.description,
+      price: Number(data.price),
+      stock: Number(data.stock),
+      image: data.image || "/images/products/robusto.jpg",
+      category: data.category,
+      strength: data.strength || "Medio",
+      origin: data.origin || "República Dominicana",
+      size: data.size || '5" x 50',
+      featured: data.featured ?? false,
+    });
+
+    return NextResponse.json(product);
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      { error: "Error al actualizar producto" },
       { status: 500 }
     );
   }

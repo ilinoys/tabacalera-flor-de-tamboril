@@ -33,6 +33,29 @@ export async function createProduct(data: {
   });
 }
 
+export async function updateProduct(
+  id: string,
+  data: {
+    name: string;
+    description: string;
+    price: number;
+    stock: number;
+    image: string;
+    category: string;
+    strength: string;
+    origin: string;
+    size: string;
+    featured: boolean;
+  }
+) {
+  return await prisma.product.update({
+    where: {
+      id,
+    },
+    data,
+  });
+}
+
 export async function deleteProduct(id: string) {
   return await prisma.product.delete({
     where: {
