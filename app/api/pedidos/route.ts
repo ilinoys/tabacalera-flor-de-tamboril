@@ -7,10 +7,13 @@ export async function GET() {
 
     return NextResponse.json(orders);
   } catch (error) {
-    console.error(error);
+    console.error("GET /api/pedidos:", error);
 
     return NextResponse.json(
-      { error: "Error al obtener pedidos" },
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Error desconocido",
+      },
       { status: 500 }
     );
   }
@@ -20,16 +23,26 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
 
+    console.log("===== NUEVO PEDIDO =====");
+    console.log(JSON.stringify(data, null, 2));
+
     const order = await createOrder(data);
 
-    return NextResponse.json(order, {
-      status: 201,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        order,
+      },
+      { status: 201 }
+    );
   } catch (error) {
-    console.error(error);
+    console.error("POST /api/pedidos:", error);
 
     return NextResponse.json(
-      { error: "Error al crear pedido" },
+      {
+        success: false,
+        error: error instanceof Error ? error.message : "Error desconocido",
+      },
       { status: 500 }
     );
   }

@@ -1,8 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { useCartStore } from "@/store/cartStore";
 
 export default function RequestQuoteForm() {
+  const items = useCartStore((state) => state.items);
+  const clearCart = useCartStore((state) => state.clearCart);
+
+  const [loading, setLoading] = useState(false);
+
   const [form, setForm] = useState({
     customerName: "",
     company: "",
@@ -25,9 +31,63 @@ export default function RequestQuoteForm() {
     }));
   }
 
-  return (
-    <div className="mt-8 rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
 
+    if (items.length === 0) {
+      alert("El carrito está vacío.");
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch("/api/pedidos", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...form,
+          items: items.map((item) => ({
+            productId: item.id,
+            quantity: item.quantity,
+            price: item.price,
+          })),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error al enviar la solicitud");
+      }
+
+      alert("✅ Solicitud enviada correctamente.");
+
+      clearCart();
+
+      setForm({
+        customerName: "",
+        company: "",
+        email: "",
+        phone: "",
+        country: "",
+        city: "",
+        customerType: "PARTICULAR",
+        notes: "",
+      });
+    } catch (error) {
+      console.error(error);
+      alert("❌ No se pudo enviar la solicitud.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="mt-8 rounded-2xl border border-neutral-800 bg-neutral-900 p-8"
+    >
       <h2 className="text-2xl font-bold text-white">
         Solicitar Cotización
       </h2>
@@ -37,13 +97,13 @@ export default function RequestQuoteForm() {
       </p>
 
       <div className="grid gap-5 md:grid-cols-2">
-
         <input
           name="customerName"
           placeholder="Nombre completo"
           value={form.customerName}
           onChange={handleChange}
           className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          required
         />
 
         <input
@@ -61,6 +121,7 @@ export default function RequestQuoteForm() {
           value={form.email}
           onChange={handleChange}
           className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          required
         />
 
         <input
@@ -69,6 +130,7 @@ export default function RequestQuoteForm() {
           value={form.phone}
           onChange={handleChange}
           className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          required
         />
 
         <input
@@ -77,6 +139,7 @@ export default function RequestQuoteForm() {
           value={form.country}
           onChange={handleChange}
           className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          required
         />
 
         <input
@@ -85,6 +148,7 @@ export default function RequestQuoteForm() {
           value={form.city}
           onChange={handleChange}
           className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          required
         />
 
         <select
@@ -107,8 +171,14 @@ export default function RequestQuoteForm() {
           className="rounded-xl border border-neutral-700 bg-black p-4 text-white md:col-span-2"
         />
 
+        <button
+          type="submit"
+          disabled={loading}
+          className="rounded-xl bg-yellow-600 p-4 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 md:col-span-2"
+        >
+          {loading ? "Enviando..." : "Enviar Solicitud"}
+        </button>
       </div>
-
-    </div>
+    </form>
   );
 }
