@@ -5,9 +5,16 @@ import Link from "next/link";
 import { Menu, Search, ShoppingCart, User } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useCartStore } from "@/store/cartStore";
+
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
-  const totalItems = useCartStore((state) => state.totalItems);
+
+  const items = useCartStore((state) => state.items);
+
+  const totalItems = items.reduce(
+    (total, item) => total + item.quantity,
+    0
+  );
 
   useEffect(() => {
     const onScroll = () => {
@@ -21,17 +28,14 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 z-50 w-full transition-all duration-300 ${
         scrolled
-          ? "bg-black/95 backdrop-blur border-b border-yellow-700"
+          ? "border-b border-yellow-700 bg-black/95 backdrop-blur"
           : "bg-transparent"
       }`}
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
-
-        {/* Logo */}
         <Link href="/" className="flex items-center gap-3">
-
           <Image
             src="/images/logo/logo.png"
             alt="Logo"
@@ -48,12 +52,9 @@ export default function Header() {
               Flor De Tamboril
             </p>
           </div>
-
         </Link>
 
-        {/* Menú */}
-        <nav className="hidden lg:flex items-center gap-8 text-white">
-
+        <nav className="hidden items-center gap-8 text-white lg:flex">
           <Link href="/">Inicio</Link>
 
           <Link href="/tienda">Tienda</Link>
@@ -63,12 +64,9 @@ export default function Header() {
           <a href="#galeria">Galería</a>
 
           <a href="#contacto">Contacto</a>
-
         </nav>
 
-        {/* Acciones */}
         <div className="flex items-center gap-5">
-
           <button className="text-white hover:text-yellow-500">
             <Search size={22} />
           </button>
@@ -79,21 +77,21 @@ export default function Header() {
           >
             <ShoppingCart size={24} />
 
-            <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-xs font-bold text-black">
-  {totalItems()}
-</span>
+            {totalItems > 0 && (
+              <span className="absolute -right-2 -top-2 flex h-5 w-5 items-center justify-center rounded-full bg-yellow-500 text-xs font-bold text-black">
+                {totalItems}
+              </span>
+            )}
           </Link>
 
           <button className="text-white hover:text-yellow-500">
             <User size={22} />
           </button>
 
-          <button className="lg:hidden text-white">
+          <button className="text-white lg:hidden">
             <Menu size={28} />
           </button>
-
         </div>
-
       </div>
     </header>
   );
