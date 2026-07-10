@@ -1,5 +1,4 @@
 import { prisma } from "@/lib/prisma";
-import { getProductById } from "@/lib/products";
 
 interface CreateOrderData {
   customerName: string;
@@ -23,64 +22,33 @@ export async function createOrder(data: CreateOrderData) {
     throw new Error("El pedido no contiene productos.");
   }
 
-  return prisma.$transaction(async (tx) => {
-    await Promise.all(
-      data.items.map(async (item) => {
-        const catalogProduct = getProductById(item.productId);
+  return prisma.order.create({
+    data: {
+      customerName: data.customerName,
+      company: data.company || null,
+      email: data.email,
+      phone: data.phone,
+      country: data.country,
+      city: data.city,
+      customerType: data.customerType,
+      notes: data.notes || null,
 
-        if (!catalogProduct) {
-          throw new Error(`Producto invalido: ${item.productId}`);
-        }
+      items: {
+        create: data.items.map((item) => ({
+          productId: item.productId,
+          quantity: Number(item.quantity),
+          price: Number(item.price),
+        })),
+      },
+    },
 
-        await tx.product.upsert({
-          where: {
-            id: catalogProduct.id,
-          },
-          update: {
-            name: catalogProduct.name,
-            description: catalogProduct.description,
-            price: catalogProduct.price,
-            stock: catalogProduct.stock,
-            image: catalogProduct.image,
-            category: catalogProduct.category,
-            strength: catalogProduct.strength,
-            origin: catalogProduct.origin,
-            size: catalogProduct.size,
-            featured: catalogProduct.featured,
-          },
-          create: catalogProduct,
-        });
-      })
-    );
-
-    return tx.order.create({
-      data: {
-        customerName: data.customerName,
-        company: data.company || null,
-        email: data.email,
-        phone: data.phone,
-        country: data.country,
-        city: data.city,
-        customerType: data.customerType,
-        notes: data.notes || null,
-
-        items: {
-          create: data.items.map((item) => ({
-            productId: item.productId,
-            quantity: Number(item.quantity),
-            price: Number(item.price),
-          })),
+    include: {
+      items: {
+        include: {
+          product: true,
         },
       },
-
-      include: {
-        items: {
-          include: {
-            product: true,
-          },
-        },
-      },
-    });
+    },
   });
 }
 
@@ -110,6 +78,27 @@ export async function getOrder(id: string) {
           product: true,
         },
       },
+    },
+  });
+}
+
+export async function updateOrderStatus(
+  id: string,
+  status:
+    | "PENDIENTE"
+    | "EN_REVISION"
+    | "COTIZADO"
+    | "CONFIRMADO"
+    | "ENVIADO"
+    | "ENTREGADO"
+    | "CANCELADO"
+) {
+  return prisma.order.update({
+    where: {
+      id,
+    },
+    data: {
+      status,
     },
   });
 }

@@ -1,37 +1,33 @@
+"use client";
+
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
-import ProductTable from "@/components/admin/products/ProductTable";
+import OrderTable from "@/components/admin/orders/OrderTable";
 
-export default function ProductosPage() {
+export default function PedidosPage() {
   return (
     <main className="flex min-h-screen bg-black">
-
       <AdminSidebar />
 
       <div className="flex-1">
-
         <AdminHeader />
 
         <div className="p-10">
-
           <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h1 className="text-4xl font-bold text-white">
+                Solicitudes de Pedidos
+              </h1>
 
-            <h1 className="text-4xl font-bold text-white">
-              Productos
-            </h1>
-
-            <button className="rounded-lg bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500">
-              Nuevo Producto
-            </button>
-
+              <p className="mt-2 text-neutral-400">
+                Administra todas las solicitudes recibidas desde la página web.
+              </p>
+            </div>
           </div>
 
-          <ProductTable />
-
+          <OrderTable />
         </div>
-
       </div>
-
     </main>
   );
 }
