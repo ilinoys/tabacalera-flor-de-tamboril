@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+
 import {
   LayoutDashboard,
   Package,
   ShoppingCart,
   Users,
+  FileText,
   Boxes,
   Settings,
 } from "lucide-react";
@@ -32,6 +35,11 @@ const menu = [
     icon: Users,
   },
   {
+    title: "Cotizaciones",
+    href: "/admin/cotizaciones",
+    icon: FileText,
+  },
+  {
     title: "Inventario",
     href: "/admin/inventario",
     icon: Boxes,
@@ -44,8 +52,10 @@ const menu = [
 ];
 
 export default function AdminSidebar() {
+  const pathname = usePathname();
+
   return (
-    <aside className="w-72 min-h-screen bg-neutral-950 border-r border-neutral-800">
+    <aside className="min-h-screen w-72 border-r border-neutral-800 bg-neutral-950">
 
       <div className="p-8">
 
@@ -59,20 +69,29 @@ export default function AdminSidebar() {
 
       </div>
 
-      <nav className="px-4 space-y-2">
+      <nav className="space-y-2 px-4">
 
         {menu.map((item) => {
           const Icon = item.icon;
+
+          const active =
+            pathname === item.href ||
+            (item.href !== "/admin" &&
+              pathname.startsWith(item.href));
 
           return (
             <Link
               key={item.title}
               href={item.href}
-              className="flex items-center gap-4 rounded-xl px-4 py-3 text-neutral-300 transition hover:bg-yellow-600 hover:text-white"
+              className={`flex items-center gap-4 rounded-xl px-4 py-3 transition-all ${
+                active
+                  ? "bg-yellow-600 font-semibold text-white shadow-lg"
+                  : "text-neutral-300 hover:bg-neutral-800 hover:text-white"
+              }`}
             >
               <Icon size={22} />
 
-              {item.title}
+              <span>{item.title}</span>
             </Link>
           );
         })}
