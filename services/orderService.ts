@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { OrderStatus } from "@prisma/client";
 
 interface CreateOrderData {
   customerName: string;
@@ -52,15 +53,76 @@ export async function createOrder(data: CreateOrderData) {
   });
 }
 
-export async function getOrders() {
-  return prisma.order.findMany({
+export async function createOrderFromQuotation(
+  quotationId: string
+) {
+  const quotation = await prisma.quotation.findUnique({
+    where: {
+      id: quotationId,
+    },
+
     include: {
+      customer: true,
+
+      items: true,
+    },
+  });
+
+  if (!quotation) {
+    throw new Error("La cotización no existe.");
+  }
+
+  const order = await prisma.order.create({
+    data: {
+      customerId: quotation.customer.id,
+
+      customerName: quotation.customer.customerName,
+      company: quotation.customer.company,
+      email: quotation.customer.email,
+      phone: quotation.customer.phone,
+      country: quotation.customer.country,
+      city: quotation.customer.city,
+      customerType: quotation.customer.customerType,
+
+      notes: quotation.notes,
+
+      status: OrderStatus.PENDIENTE,
+
+      items: {
+        create: quotation.items.map((item) => ({
+          productId: item.productId,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+      },
+    },
+
+    include: {
+      customer: true,
+
       items: {
         include: {
           product: true,
         },
       },
     },
+  });
+
+  return order;
+}
+
+export async function getOrders() {
+  return prisma.order.findMany({
+    include: {
+      customer: true,
+
+      items: {
+        include: {
+          product: true,
+        },
+      },
+    },
+
     orderBy: {
       createdAt: "desc",
     },
@@ -72,7 +134,10 @@ export async function getOrder(id: string) {
     where: {
       id,
     },
+
     include: {
+      customer: true,
+
       items: {
         include: {
           product: true,
@@ -84,19 +149,13 @@ export async function getOrder(id: string) {
 
 export async function updateOrderStatus(
   id: string,
-  status:
-    | "PENDIENTE"
-    | "EN_REVISION"
-    | "COTIZADO"
-    | "CONFIRMADO"
-    | "ENVIADO"
-    | "ENTREGADO"
-    | "CANCELADO"
+  status: OrderStatus
 ) {
   return prisma.order.update({
     where: {
       id,
     },
+
     data: {
       status,
     },

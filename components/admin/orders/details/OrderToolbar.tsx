@@ -1,6 +1,5 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
@@ -10,72 +9,26 @@ import {
   Printer,
   Mail,
   MessageCircle,
-  RefreshCw,
 } from "lucide-react";
 
 interface Props {
-  quotationId: string;
+  orderId: string;
 }
 
-export default function QuotationToolbar({
-  quotationId,
+export default function OrderToolbar({
+  orderId,
 }: Props) {
   const router = useRouter();
 
-  const [loading, setLoading] = useState(false);
-
-  function downloadPdf() {
-    window.open(
-      `/api/cotizaciones/${quotationId}/pdf`,
-      "_blank"
-    );
-  }
-
-  function printQuotation() {
+  function printOrder() {
     window.print();
   }
 
-  async function convertToOrder() {
-    const confirmed = window.confirm(
-      "¿Deseas convertir esta cotización en un pedido?"
+  function downloadPdf() {
+    window.open(
+      `/api/pedidos/${orderId}/pdf`,
+      "_blank"
     );
-
-    if (!confirmed) return;
-
-    try {
-      setLoading(true);
-
-      const response = await fetch(
-        `/api/cotizaciones/${quotationId}/convertir`,
-        {
-          method: "POST",
-        }
-      );
-
-      const result = await response.json();
-
-      if (!response.ok) {
-        throw new Error(
-          result.error ??
-            "No se pudo convertir la cotización."
-        );
-      }
-
-      alert("✅ Pedido creado correctamente.");
-
-      router.push(`/admin/pedidos/${result.id}`);
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        error instanceof Error
-          ? error.message
-          : "Ocurrió un error."
-      );
-    } finally {
-      setLoading(false);
-    }
   }
 
   return (
@@ -84,7 +37,7 @@ export default function QuotationToolbar({
       <div className="flex flex-wrap items-center justify-between gap-4">
 
         <Link
-          href="/admin/cotizaciones"
+          href="/admin/pedidos"
           className="flex items-center gap-2 rounded-xl bg-neutral-800 px-5 py-3 text-white hover:bg-neutral-700"
         >
           <ArrowLeft size={18} />
@@ -102,7 +55,7 @@ export default function QuotationToolbar({
           </button>
 
           <button
-            onClick={printQuotation}
+            onClick={printOrder}
             className="flex items-center gap-2 rounded-xl bg-neutral-800 px-5 py-3 text-white hover:bg-neutral-700"
           >
             <Printer size={18} />
@@ -121,21 +74,6 @@ export default function QuotationToolbar({
           >
             <Mail size={18} />
             Correo
-          </button>
-
-          <button
-            onClick={convertToOrder}
-            disabled={loading}
-            className="flex items-center gap-2 rounded-xl bg-purple-600 px-5 py-3 font-bold text-white hover:bg-purple-500 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            <RefreshCw
-              size={18}
-              className={loading ? "animate-spin" : ""}
-            />
-
-            {loading
-              ? "Convirtiendo..."
-              : "Convertir en Pedido"}
           </button>
 
         </div>

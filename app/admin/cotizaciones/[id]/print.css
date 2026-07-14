@@ -1,0 +1,19 @@
+@media print {
+
+  body {
+    background: white !important;
+  }
+
+  button,
+  nav,
+  aside,
+  header {
+    display: none !important;
+  }
+
+  main {
+    background: white !important;
+    padding: 0 !important;
+  }
+
+}

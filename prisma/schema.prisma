@@ -31,6 +31,20 @@ enum QuotationStatus {
   EXPIRADA
 }
 
+enum Currency {
+  USD
+  EUR
+  DOP
+}
+
+enum Incoterm {
+  EXW
+  FOB
+  CIF
+  CFR
+  DDP
+}
+
 model Product {
   id          String   @id @default(cuid())
   name        String
@@ -129,6 +143,18 @@ model Quotation {
   total    Float
 
   notes String?
+
+  validUntil DateTime?
+
+  currency Currency @default(USD)
+
+  paymentTerms String?
+
+  deliveryTime String?
+
+  incoterm Incoterm?
+
+  salesperson String?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt

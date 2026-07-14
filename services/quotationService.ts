@@ -1,5 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { QuotationStatus } from "@prisma/client";
+import {
+  Currency,
+  Incoterm,
+  QuotationStatus,
+} from "@prisma/client";
 
 interface CreateQuotationData {
   customerId: string;
@@ -9,6 +13,18 @@ interface CreateQuotationData {
   total: number;
 
   notes?: string;
+
+  validUntil?: Date;
+
+  currency?: Currency;
+
+  paymentTerms?: string;
+
+  deliveryTime?: string;
+
+  incoterm?: Incoterm;
+
+  salesperson?: string;
 
   items: {
     productId: string;
@@ -53,6 +69,18 @@ export async function createQuotation(
       total: Number(data.total),
 
       notes: data.notes || null,
+
+      validUntil: data.validUntil ?? null,
+
+      currency: data.currency ?? Currency.USD,
+
+      paymentTerms: data.paymentTerms || null,
+
+      deliveryTime: data.deliveryTime || null,
+
+      incoterm: data.incoterm ?? null,
+
+      salesperson: data.salesperson || null,
 
       items: {
         create: data.items.map((item) => ({
