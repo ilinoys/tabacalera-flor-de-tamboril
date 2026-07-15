@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Eye, ShoppingCart } from "lucide-react";
-import { Product } from "@/lib/products";
+import type { Product } from "@/types/product";
 import { useCartStore } from "@/store/cartStore";
 
 interface Props {

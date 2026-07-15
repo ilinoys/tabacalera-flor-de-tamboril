@@ -1,9 +1,9 @@
-import { getFeaturedProducts } from "@/lib/products";
 import ProductCard from "@/components/product/ProductCard";
 import Link from "next/link";
+import { getFeaturedProducts } from "@/services/productService";
 
-export default function Featured() {
-  const featured = getFeaturedProducts();
+export default async function Featured() {
+  const featured = await getFeaturedProducts();
 
   return (
     <section className="bg-black py-20">

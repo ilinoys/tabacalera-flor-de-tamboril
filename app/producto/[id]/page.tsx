@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getProductById } from "@/lib/products";
+import { getProduct } from "@/services/productService";
 
 interface Props {
   params: Promise<{
@@ -12,7 +12,7 @@ interface Props {
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
 
-  const product = getProductById(id);
+  const product = await getProduct(id);
 
   if (!product) {
     notFound();

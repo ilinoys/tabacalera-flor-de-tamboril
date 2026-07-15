@@ -1,9 +1,11 @@
-import { products } from "@/lib/products";
 import ProductCard from "@/components/product/ProductCard";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { getProducts } from "@/services/productService";
 
-export default function TiendaPage() {
+export default async function TiendaPage() {
+  const products = await getProducts();
+
   return (
     <>
       <Header />

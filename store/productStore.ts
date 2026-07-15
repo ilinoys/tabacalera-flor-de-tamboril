@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { Product } from "@/lib/products";
+import type { Product } from "@/types/product";
 
 interface ProductStore {
   products: Product[];
@@ -8,10 +8,8 @@ interface ProductStore {
   updateProduct: (product: Product) => void;
 }
 
-import { products as initialProducts } from "@/lib/products";
-
 export const useProductStore = create<ProductStore>((set) => ({
-  products: initialProducts,
+  products: [],
 
   addProduct: (product) =>
     set((state) => ({
