@@ -41,6 +41,7 @@ export async function getCustomer(id: string) {
           createdAt: "desc",
         },
       },
+
       quotations: {
         include: {
           items: {
@@ -87,19 +88,19 @@ export async function searchCustomers(search: string) {
         },
       ],
     },
+
     include: {
       orders: true,
       quotations: true,
     },
+
     orderBy: {
       customerName: "asc",
     },
   });
 }
 
-export async function createCustomer(
-  data: CustomerData
-) {
+export async function createCustomer(data: CustomerData) {
   return prisma.customer.create({
     data,
   });
@@ -117,9 +118,7 @@ export async function updateCustomer(
   });
 }
 
-export async function deleteCustomer(
-  id: string
-) {
+export async function deleteCustomer(id: string) {
   return prisma.customer.delete({
     where: {
       id,

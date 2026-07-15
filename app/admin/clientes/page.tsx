@@ -1,9 +1,37 @@
 "use client";
 
+import { useState } from "react";
+
 import AdminSidebar from "@/components/admin/AdminSidebar";
 import AdminHeader from "@/components/admin/AdminHeader";
 
+import CustomerTable, {
+  Customer,
+} from "@/components/admin/customers/CustomerTable";
+import CustomerModal from "@/components/admin/customers/CustomerModal";
+
 export default function ClientesPage() {
+  const [openModal, setOpenModal] = useState(false);
+
+  const [selectedCustomer, setSelectedCustomer] =
+    useState<Customer | null>(null);
+
+  const [reloadKey, setReloadKey] = useState(0);
+
+  function reloadCustomers() {
+    setReloadKey((current) => current + 1);
+  }
+
+  function newCustomer() {
+    setSelectedCustomer(null);
+    setOpenModal(true);
+  }
+
+  function editCustomer(customer: Customer) {
+    setSelectedCustomer(customer);
+    setOpenModal(true);
+  }
+
   return (
     <main className="flex min-h-screen bg-black">
 
@@ -23,124 +51,35 @@ export default function ClientesPage() {
                 Clientes
               </h1>
 
-              <p className="mt-3 max-w-3xl text-neutral-400">
-                Administra todos los clientes de Flor de Tamboril.
-                Desde este módulo podrás consultar información,
-                cotizaciones, pedidos e historial comercial.
+              <p className="mt-3 text-neutral-400">
+                Administra todos los clientes registrados en Flor de Tamboril.
               </p>
 
             </div>
 
             <button
-              className="rounded-xl bg-yellow-600 px-8 py-4 font-bold text-white transition hover:bg-yellow-500"
+              onClick={newCustomer}
+              className="rounded-xl bg-yellow-600 px-8 py-4 font-bold text-white hover:bg-yellow-500"
             >
               + Nuevo Cliente
             </button>
 
           </div>
 
-          <div className="mb-8 grid gap-6 md:grid-cols-4">
+          <CustomerTable
+            reloadKey={reloadKey}
+            onEdit={editCustomer}
+          />
 
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-
-              <p className="text-sm text-neutral-400">
-                Total Clientes
-              </p>
-
-              <h2 className="mt-3 text-4xl font-bold text-white">
-                0
-              </h2>
-
-            </div>
-
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-
-              <p className="text-sm text-neutral-400">
-                Distribuidores
-              </p>
-
-              <h2 className="mt-3 text-4xl font-bold text-white">
-                0
-              </h2>
-
-            </div>
-
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-
-              <p className="text-sm text-neutral-400">
-                Mayoristas
-              </p>
-
-              <h2 className="mt-3 text-4xl font-bold text-white">
-                0
-              </h2>
-
-            </div>
-
-            <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-
-              <p className="text-sm text-neutral-400">
-                Particulares
-              </p>
-
-              <h2 className="mt-3 text-4xl font-bold text-white">
-                0
-              </h2>
-
-            </div>
-
-          </div>
-
-          <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
-
-            <table className="w-full">
-
-              <thead className="bg-black">
-
-                <tr>
-
-                  <th className="p-5 text-left text-yellow-500">
-                    Cliente
-                  </th>
-
-                  <th className="p-5 text-left text-yellow-500">
-                    Empresa
-                  </th>
-
-                  <th className="p-5 text-left text-yellow-500">
-                    País
-                  </th>
-
-                  <th className="p-5 text-left text-yellow-500">
-                    Tipo
-                  </th>
-
-                  <th className="p-5 text-center text-yellow-500">
-                    Acciones
-                  </th>
-
-                </tr>
-
-              </thead>
-
-              <tbody>
-
-                <tr>
-
-                  <td
-                    colSpan={5}
-                    className="p-10 text-center text-neutral-500"
-                  >
-                    Todavía no hay clientes registrados.
-                  </td>
-
-                </tr>
-
-              </tbody>
-
-            </table>
-
-          </div>
+          <CustomerModal
+            open={openModal}
+            customer={selectedCustomer}
+            onClose={() => {
+              setOpenModal(false);
+              setSelectedCustomer(null);
+            }}
+            onSaved={reloadCustomers}
+          />
 
         </div>
 

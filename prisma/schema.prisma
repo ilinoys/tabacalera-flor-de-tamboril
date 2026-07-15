@@ -174,3 +174,71 @@ model QuotationItem {
   quotation Quotation @relation(fields: [quotationId], references: [id], onDelete: Cascade)
   product   Product   @relation(fields: [productId], references: [id])
 }
+
+model CompanySettings {
+  id String @id @default(cuid())
+
+  // Empresa
+  companyName String
+  slogan String?
+
+  logo String?
+
+  rnc String?
+
+  address String
+  city String
+  country String
+
+  // Contacto
+  phone String
+  mobile String
+  whatsapp String?
+
+  email String
+  website String?
+
+  // Comercial
+  currency Currency @default(USD)
+
+  defaultIncoterm Incoterm?
+
+  paymentTerms String?
+
+  deliveryTime String?
+
+  language String @default("es")
+
+  timezone String @default("America/Santo_Domingo")
+
+  // Exportación
+  exportPort String?
+
+  destinationPort String?
+
+  exportCountry String?
+
+  // PDF
+  primaryColor String? @default("#D4AF37")
+
+  secondaryColor String? @default("#000000")
+
+  pdfFooter String?
+
+  showLogo Boolean @default(true)
+
+  showSignature Boolean @default(true)
+
+  showStamp Boolean @default(true)
+
+  // Correo
+  senderName String?
+
+  senderEmail String?
+
+  // WhatsApp
+  whatsappMessage String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

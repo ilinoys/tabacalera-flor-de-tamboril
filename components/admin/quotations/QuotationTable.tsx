@@ -1,7 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useImperativeHandle, useState, forwardRef } from "react";
+import {
+  useEffect,
+  useImperativeHandle,
+  useState,
+  forwardRef,
+} from "react";
+
+import StatusBadge from "./StatusBadge";
+import QuotationActions from "./QuotationActions";
 
 interface Quotation {
   id: string;
@@ -36,7 +44,7 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
       });
 
       if (!response.ok) {
-        throw new Error("No se pudieron cargar las cotizaciones.");
+        throw new Error();
       }
 
       const data = await response.json();
@@ -107,7 +115,7 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
             </th>
 
             <th className="p-4 text-center text-yellow-500">
-              Acción
+              Acciones
             </th>
 
           </tr>
@@ -140,11 +148,7 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
               </td>
 
               <td className="p-4">
-
-                <span className="rounded-full bg-yellow-600 px-3 py-1 text-sm font-bold text-white">
-                  {quotation.status}
-                </span>
-
+                <StatusBadge status={quotation.status} />
               </td>
 
               <td className="p-4 text-white">
@@ -157,14 +161,23 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
                 ).toLocaleDateString()}
               </td>
 
-              <td className="p-4 text-center">
+              <td className="p-4">
 
-                <Link
-                  href={`/admin/cotizaciones/${quotation.id}`}
-                  className="rounded-lg bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-500"
-                >
-                  Ver
-                </Link>
+                <QuotationActions
+                  onView={() => {
+                    window.location.href =
+                      `/admin/cotizaciones/${quotation.id}`;
+                  }}
+                  onEdit={() => {
+                    alert("Próximo Sprint");
+                  }}
+                  onDuplicate={() => {
+                    alert("Próximo Sprint");
+                  }}
+                  onDelete={() => {
+                    alert("Próximo Sprint");
+                  }}
+                />
 
               </td>
 

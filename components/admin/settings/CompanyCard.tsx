@@ -1,92 +1,61 @@
-import SettingsCard from "./SettingsCard";
+"use client";
 
-export default function CompanyCard() {
+interface Props {
+  form: any;
+  update: (field: string, value: string) => void;
+}
+
+export default function CompanyCard({
+  form,
+  update,
+}: Props) {
   return (
-    <SettingsCard
-      title="Información de la Empresa"
-      description="Estos datos serán utilizados automáticamente en cotizaciones, pedidos, PDFs, correos y demás módulos del ERP."
-    >
-      <div className="grid gap-6 md:grid-cols-2">
+    <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-neutral-300">
-            Nombre de la Empresa
-          </label>
+      <h2 className="mb-6 text-2xl font-bold text-yellow-500">
+        Empresa
+      </h2>
 
-          <input
-            type="text"
-            value="Flor de Tamboril"
-            readOnly
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 p-3 text-white"
-          />
-        </div>
+      <div className="space-y-4">
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-neutral-300">
-            RNC
-          </label>
+        <input
+          className="w-full rounded-lg border border-neutral-700 bg-black p-3 text-white"
+          placeholder="Nombre de la empresa"
+          value={form.companyName}
+          onChange={(e) =>
+            update("companyName", e.target.value)
+          }
+        />
 
-          <input
-            type="text"
-            placeholder="Pendiente"
-            readOnly
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 p-3 text-white"
-          />
-        </div>
+        <input
+          className="w-full rounded-lg border border-neutral-700 bg-black p-3 text-white"
+          placeholder="Eslogan"
+          value={form.slogan}
+          onChange={(e) =>
+            update("slogan", e.target.value)
+          }
+        />
 
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-neutral-300">
-            Teléfono
-          </label>
+        <input
+          className="w-full rounded-lg border border-neutral-700 bg-black p-3 text-white"
+          placeholder="RNC"
+          value={form.rnc}
+          onChange={(e) =>
+            update("rnc", e.target.value)
+          }
+        />
 
-          <input
-            type="text"
-            value="809-570-9860"
-            readOnly
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 p-3 text-white"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-neutral-300">
-            Celular
-          </label>
-
-          <input
-            type="text"
-            value="829-898-6214"
-            readOnly
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 p-3 text-white"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-neutral-300">
-            Ciudad
-          </label>
-
-          <input
-            type="text"
-            value="Tamboril"
-            readOnly
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 p-3 text-white"
-          />
-        </div>
-
-        <div>
-          <label className="mb-2 block text-sm font-semibold text-neutral-300">
-            Provincia
-          </label>
-
-          <input
-            type="text"
-            value="Santiago"
-            readOnly
-            className="w-full rounded-xl border border-neutral-700 bg-neutral-950 p-3 text-white"
-          />
-        </div>
+        <input
+          className="w-full rounded-lg border border-neutral-700 bg-black p-3 text-white"
+          placeholder="Dirección"
+          value={form.address}
+          onChange={(e) =>
+            update("address", e.target.value)
+          }
+        />
 
       </div>
-    </SettingsCard>
+
+    </div>
   );
 }
