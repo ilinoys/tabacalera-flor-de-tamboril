@@ -23,26 +23,36 @@ export default function QuoteProducts({
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadProducts();
-  }, []);
+    let cancelled = false;
 
-  async function loadProducts() {
-    try {
-      const response = await fetch("/api/productos");
+    async function loadProducts() {
+      try {
+        const response = await fetch("/api/productos");
 
-      if (!response.ok) {
-        throw new Error("No se pudieron cargar los productos.");
+        if (!response.ok) {
+          throw new Error("No se pudieron cargar los productos.");
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
       }
-
-      const data = await response.json();
-
-      setProducts(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
     }
-  }
+
+    void loadProducts();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   if (loading) {
     return (

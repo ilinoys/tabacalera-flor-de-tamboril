@@ -18,6 +18,11 @@ interface ProductTableProps {
   onEdit: (product: Product) => void;
 }
 
+async function fetchProducts() {
+  const response = await fetch("/api/productos");
+  return response.json() as Promise<Product[]>;
+}
+
 export default function ProductTable({
   onEdit,
 }: ProductTableProps) {
@@ -26,8 +31,7 @@ export default function ProductTable({
 
   async function loadProducts() {
     try {
-      const response = await fetch("/api/productos");
-      const data = await response.json();
+      const data = await fetchProducts();
 
       setProducts(data);
     } catch (error) {
@@ -67,7 +71,29 @@ export default function ProductTable({
   }
 
   useEffect(() => {
-    loadProducts();
+    let cancelled = false;
+
+    async function loadInitialProducts() {
+      try {
+        const data = await fetchProducts();
+
+        if (!cancelled) {
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadInitialProducts();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   if (loading) {

@@ -29,28 +29,36 @@ export default function CustomerTable({
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [search, setSearch] = useState("");
 
-  async function loadCustomers() {
-    try {
-      const url = search
-        ? `/api/clientes?search=${encodeURIComponent(search)}`
-        : "/api/clientes";
-
-      const response = await fetch(url);
-
-      if (!response.ok) {
-        throw new Error();
-      }
-
-      const data = await response.json();
-
-      setCustomers(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   useEffect(() => {
-    loadCustomers();
+    let cancelled = false;
+
+    async function loadCustomers() {
+      try {
+        const url = search
+          ? `/api/clientes?search=${encodeURIComponent(search)}`
+          : "/api/clientes";
+
+        const response = await fetch(url);
+
+        if (!response.ok) {
+          throw new Error();
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setCustomers(data);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    void loadCustomers();
+
+    return () => {
+      cancelled = true;
+    };
   }, [reloadKey, search]);
 
   async function removeCustomer(id: string) {

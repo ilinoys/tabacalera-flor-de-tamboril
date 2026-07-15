@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 import {
   ArrowLeft,
@@ -18,8 +17,6 @@ interface Props {
 export default function OrderToolbar({
   orderId,
 }: Props) {
-  const router = useRouter();
-
   function printOrder() {
     window.print();
   }

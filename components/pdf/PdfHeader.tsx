@@ -2,8 +2,9 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
+  Image as PdfImage,
 } from "@react-pdf/renderer";
+import type { ImageProps } from "@react-pdf/renderer";
 
 interface Props {
   quotationNumber: string;
@@ -11,6 +12,19 @@ interface Props {
   validUntil?: string | null;
   status: string;
   currency?: string;
+}
+
+type AccessibleImageProps = ImageProps & {
+  alt: string;
+};
+
+function AccessibleImage({
+  alt,
+  ...props
+}: AccessibleImageProps) {
+  void alt;
+
+  return <PdfImage {...props} />;
 }
 
 const styles = StyleSheet.create({
@@ -96,9 +110,10 @@ export default function PdfHeader({
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <Image
+        <AccessibleImage
           src="public/images/logo/logo.png"
           style={styles.logo}
+          alt="Flor de Tamboril"
         />
 
         <View>

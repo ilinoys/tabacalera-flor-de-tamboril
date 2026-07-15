@@ -23,26 +23,36 @@ export default function CustomerSelector({
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [loading, setLoading] = useState(true);
 
-  async function loadCustomers() {
-    try {
-      const response = await fetch("/api/clientes");
-
-      if (!response.ok) {
-        throw new Error("No se pudieron cargar los clientes.");
-      }
-
-      const data = await response.json();
-
-      setCustomers(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadCustomers();
+    let cancelled = false;
+
+    async function loadCustomers() {
+      try {
+        const response = await fetch("/api/clientes");
+
+        if (!response.ok) {
+          throw new Error("No se pudieron cargar los clientes.");
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setCustomers(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadCustomers();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (

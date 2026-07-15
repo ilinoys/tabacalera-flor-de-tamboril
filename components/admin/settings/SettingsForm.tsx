@@ -10,7 +10,7 @@ import WhatsappCard from "./WhatsappCard";
 import MailCard from "./MailCard";
 import PreferencesCard from "./PreferencesCard";
 
-interface Settings {
+export interface Settings {
   companyName: string;
   slogan: string;
   rnc: string;
@@ -46,6 +46,13 @@ interface Settings {
   showSignature: boolean;
   showStamp: boolean;
 }
+
+export type SettingsValue = Settings[keyof Settings];
+
+export type UpdateSettingsField = (
+  field: keyof Settings,
+  value: SettingsValue
+) => void;
 
 export default function SettingsForm() {
   const [loading, setLoading] = useState(true);
@@ -89,33 +96,41 @@ export default function SettingsForm() {
   });
 
   useEffect(() => {
-    loadSettings();
+    let cancelled = false;
+
+    async function loadSettings() {
+      try {
+        const response = await fetch("/api/configuracion");
+
+        if (!response.ok) {
+          throw new Error();
+        }
+
+        const data = await response.json();
+
+        if (data && !cancelled) {
+          setForm((current) => ({
+            ...current,
+            ...data,
+          }));
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadSettings();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
-  async function loadSettings() {
-    try {
-      const response = await fetch("/api/configuracion");
-
-      if (!response.ok) {
-        throw new Error();
-      }
-
-      const data = await response.json();
-
-      if (data) {
-        setForm({
-          ...form,
-          ...data,
-        });
-      }
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
-  function update(field: string, value: any) {
+  function update(field: keyof Settings, value: SettingsValue) {
     setForm((current) => ({
       ...current,
       [field]: value,

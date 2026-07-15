@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface OrderItem {
   id: string;
@@ -38,13 +38,7 @@ export default function OrderModal({
   onClose,
 }: Props) {
   const [saving, setSaving] = useState(false);
-  const [status, setStatus] = useState("");
-
-  useEffect(() => {
-    if (order) {
-      setStatus(order.status);
-    }
-  }, [order]);
+  const [status, setStatus] = useState(order?.status ?? "");
 
   if (!open || !order) return null;
 

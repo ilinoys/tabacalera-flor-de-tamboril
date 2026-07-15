@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 interface Customer {
   id?: string;
@@ -18,6 +18,31 @@ interface Props {
   onSuccess: () => void;
 }
 
+const emptyCustomer: Customer = {
+  customerName: "",
+  company: "",
+  email: "",
+  phone: "",
+  country: "",
+  city: "",
+  customerType: "PARTICULAR",
+};
+
+function getInitialCustomer(customer?: Customer | null): Customer {
+  if (!customer) return emptyCustomer;
+
+  return {
+    id: customer.id,
+    customerName: customer.customerName,
+    company: customer.company ?? "",
+    email: customer.email,
+    phone: customer.phone,
+    country: customer.country,
+    city: customer.city,
+    customerType: customer.customerType,
+  };
+}
+
 export default function CustomerForm({
   customer,
   onSuccess,
@@ -26,30 +51,9 @@ export default function CustomerForm({
 
   const [saving, setSaving] = useState(false);
 
-  const [form, setForm] = useState<Customer>({
-    customerName: "",
-    company: "",
-    email: "",
-    phone: "",
-    country: "",
-    city: "",
-    customerType: "PARTICULAR",
-  });
-
-  useEffect(() => {
-    if (customer) {
-      setForm({
-        id: customer.id,
-        customerName: customer.customerName,
-        company: customer.company ?? "",
-        email: customer.email,
-        phone: customer.phone,
-        country: customer.country,
-        city: customer.city,
-        customerType: customer.customerType,
-      });
-    }
-  }, [customer]);
+  const [form, setForm] = useState<Customer>(() =>
+    getInitialCustomer(customer)
+  );
 
   function update(field: keyof Customer, value: string) {
     setForm((current) => ({

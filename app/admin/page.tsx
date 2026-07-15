@@ -33,28 +33,38 @@ export default function AdminPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
 
-  async function loadDashboard() {
-    try {
-      const response = await fetch("/api/dashboard", {
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error("No se pudo cargar el dashboard.");
-      }
-
-      const data = await response.json();
-
-      setStats(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadDashboard();
+    let cancelled = false;
+
+    async function loadDashboard() {
+      try {
+        const response = await fetch("/api/dashboard", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error("No se pudo cargar el dashboard.");
+        }
+
+        const data = await response.json();
+
+        if (!cancelled) {
+          setStats(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadDashboard();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (

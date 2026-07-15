@@ -27,6 +27,11 @@ interface Order {
   items: OrderItem[];
 }
 
+async function fetchOrders() {
+  const response = await fetch("/api/pedidos");
+  return response.json() as Promise<Order[]>;
+}
+
 export default function OrderTable() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -36,26 +41,40 @@ export default function OrderTable() {
 
   const [openModal, setOpenModal] = useState(false);
 
-  async function loadOrders() {
-    try {
-      const response = await fetch("/api/pedidos");
-      const data = await response.json();
-
-      setOrders(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  }
-
   useEffect(() => {
-    loadOrders();
+    let cancelled = false;
+
+    async function loadOrders() {
+      try {
+        const data = await fetchOrders();
+
+        if (!cancelled) {
+          setOrders(data);
+        }
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void loadOrders();
+
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   function openOrder(order: Order) {
     setSelectedOrder(order);
     setOpenModal(true);
+  }
+
+  function closeOrder() {
+    setOpenModal(false);
+    setSelectedOrder(null);
   }
 
   if (loading) {
@@ -169,9 +188,10 @@ export default function OrderTable() {
       </div>
 
       <OrderModal
+        key={selectedOrder?.id ?? "no-order"}
         open={openModal}
         order={selectedOrder}
-        onClose={() => setOpenModal(false)}
+        onClose={closeOrder}
       />
     </>
   );

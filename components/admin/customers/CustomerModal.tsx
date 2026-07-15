@@ -51,6 +51,7 @@ export default function CustomerModal({
         </div>
 
         <CustomerForm
+          key={customer?.id ?? "new-customer"}
           customer={customer}
           onSuccess={() => {
             onSaved();

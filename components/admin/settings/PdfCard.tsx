@@ -1,8 +1,13 @@
 "use client";
 
-interface Props{
-    form:any;
-    update:(field:string,value:string)=>void;
+import type {
+  Settings,
+  UpdateSettingsField,
+} from "./SettingsForm";
+
+interface Props {
+    form: Settings;
+    update: UpdateSettingsField;
 }
 
 export default function PdfCard({
@@ -41,7 +46,7 @@ className="rounded-lg border border-neutral-700 bg-black p-3 text-white"
 <input
 type="checkbox"
 checked={form.showLogo}
-onChange={(e)=>update("showLogo",String(e.target.checked))}
+onChange={(e)=>update("showLogo",e.target.checked)}
 />
 
 Mostrar Logo
@@ -53,7 +58,7 @@ Mostrar Logo
 <input
 type="checkbox"
 checked={form.showSignature}
-onChange={(e)=>update("showSignature",String(e.target.checked))}
+onChange={(e)=>update("showSignature",e.target.checked)}
 />
 
 Mostrar Firma
@@ -65,7 +70,7 @@ Mostrar Firma
 <input
 type="checkbox"
 checked={form.showStamp}
-onChange={(e)=>update("showStamp",String(e.target.checked))}
+onChange={(e)=>update("showStamp",e.target.checked)}
 />
 
 Mostrar Sello

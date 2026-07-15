@@ -1,8 +1,13 @@
 "use client";
 
+import type {
+  Settings,
+  UpdateSettingsField,
+} from "./SettingsForm";
+
 interface Props {
-  form: any;
-  update: (field: string, value: string) => void;
+  form: Settings;
+  update: UpdateSettingsField;
 }
 
 export default function CommercialCard({
