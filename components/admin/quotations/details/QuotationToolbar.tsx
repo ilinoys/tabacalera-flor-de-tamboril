@@ -75,6 +75,41 @@ export default function QuotationToolbar({
     );
   }
 
+  async function sendEmail() {
+    try {
+      const response = await fetch(
+        `/api/cotizaciones/${quotationId}/email`,
+        {
+          method: "POST",
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ??
+            "No se pudo preparar el correo."
+        );
+      }
+
+      if (result.mailtoUrl) {
+        window.location.href = result.mailtoUrl;
+        return;
+      }
+
+      alert("Correo enviado correctamente.");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Ocurrio un error al preparar el correo."
+      );
+    }
+  }
+
   async function convertToOrder() {
     const confirmed = window.confirm(
       "¿Deseas convertir esta cotización en un pedido?"
@@ -158,6 +193,9 @@ export default function QuotationToolbar({
           </button>
 
           <button
+            onClick={() => {
+              void sendEmail();
+            }}
             className="flex items-center gap-2 rounded-xl bg-blue-600 px-5 py-3 font-bold text-white hover:bg-blue-500"
           >
             <Mail size={18} />
