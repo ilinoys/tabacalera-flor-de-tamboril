@@ -62,6 +62,10 @@ export default async function QuotationDetailsPage({
 
         <QuotationToolbar
           quotationId={quotation.id}
+          quotationNumber={quotation.quotationNumber}
+          customerName={quotation.customer.customerName}
+          total={quotation.total}
+          currency={quotation.currency}
         />
 
         <QuotationHeader

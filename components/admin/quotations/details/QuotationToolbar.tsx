@@ -15,10 +15,18 @@ import {
 
 interface Props {
   quotationId: string;
+  quotationNumber: string;
+  customerName: string;
+  total: number;
+  currency: string;
 }
 
 export default function QuotationToolbar({
   quotationId,
+  quotationNumber,
+  customerName,
+  total,
+  currency,
 }: Props) {
   const router = useRouter();
 
@@ -33,6 +41,38 @@ export default function QuotationToolbar({
 
   function printQuotation() {
     window.print();
+  }
+
+  function formatMoney(value: number) {
+    const prefix =
+      currency === "DOP"
+        ? "RD$"
+        : currency === "EUR"
+        ? "EUR"
+        : "US$";
+
+    return `${prefix} ${value.toFixed(2)}`;
+  }
+
+  function sendWhatsApp() {
+    const pdfUrl = new URL(
+      `/api/cotizaciones/${quotationId}/pdf`,
+      window.location.origin
+    ).toString();
+
+    const message = [
+      `Hola ${customerName},`,
+      "",
+      `Te compartimos la cotizacion ${quotationNumber}.`,
+      `Total: ${formatMoney(total)}`,
+      `PDF: ${pdfUrl}`,
+    ].join("\n");
+
+    window.open(
+      `https://wa.me/?text=${encodeURIComponent(message)}`,
+      "_blank",
+      "noopener,noreferrer"
+    );
   }
 
   async function convertToOrder() {
@@ -110,6 +150,7 @@ export default function QuotationToolbar({
           </button>
 
           <button
+            onClick={sendWhatsApp}
             className="flex items-center gap-2 rounded-xl bg-green-600 px-5 py-3 font-bold text-white hover:bg-green-500"
           >
             <MessageCircle size={18} />
