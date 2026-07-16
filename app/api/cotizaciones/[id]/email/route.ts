@@ -1,26 +1,13 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
+import { formatCurrency } from "@/lib/currency";
 import { sendQuotationEmail } from "@/services/emailService";
 
 interface Props {
   params: Promise<{
     id: string;
   }>;
-}
-
-function formatMoney(
-  value: number,
-  currency: string
-) {
-  const prefix =
-    currency === "DOP"
-      ? "RD$"
-      : currency === "EUR"
-      ? "EUR"
-      : "US$";
-
-  return `${prefix} ${value.toFixed(2)}`;
 }
 
 export async function POST(
@@ -69,7 +56,7 @@ export async function POST(
       "Te compartimos la cotizacion solicitada.",
       "",
       `Numero de cotizacion: ${quotation.quotationNumber}`,
-      `Total: ${formatMoney(
+      `Total: ${formatCurrency(
         quotation.total,
         quotation.currency
       )}`,

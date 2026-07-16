@@ -13,6 +13,8 @@ import {
   RefreshCw,
 } from "lucide-react";
 
+import { formatCurrency } from "@/lib/currency";
+
 interface Props {
   quotationId: string;
   quotationNumber: string;
@@ -43,17 +45,6 @@ export default function QuotationToolbar({
     window.print();
   }
 
-  function formatMoney(value: number) {
-    const prefix =
-      currency === "DOP"
-        ? "RD$"
-        : currency === "EUR"
-        ? "EUR"
-        : "US$";
-
-    return `${prefix} ${value.toFixed(2)}`;
-  }
-
   function sendWhatsApp() {
     const pdfUrl = new URL(
       `/api/cotizaciones/${quotationId}/pdf`,
@@ -64,7 +55,7 @@ export default function QuotationToolbar({
       `Hola ${customerName},`,
       "",
       `Te compartimos la cotizacion ${quotationNumber}.`,
-      `Total: ${formatMoney(total)}`,
+      `Total: ${formatCurrency(total, currency)}`,
       `PDF: ${pdfUrl}`,
     ].join("\n");
 

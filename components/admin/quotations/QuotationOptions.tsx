@@ -71,7 +71,6 @@ export default function QuotationOptions({
             className="w-full rounded-xl border border-neutral-700 bg-neutral-950 px-4 py-3 text-white outline-none focus:border-yellow-500"
           >
             <option value="USD">USD</option>
-            <option value="EUR">EUR</option>
             <option value="DOP">DOP</option>
           </select>
         </div>

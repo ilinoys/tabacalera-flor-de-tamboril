@@ -1,13 +1,17 @@
+import { formatCurrency } from "@/lib/currency";
+
 interface Props {
   subtotal: number;
   discount: number;
   total: number;
+  currency: string;
 }
 
 export default function TotalsCard({
   subtotal,
   discount,
   total,
+  currency,
 }: Props) {
   return (
     <div className="ml-auto mt-10 w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
@@ -25,7 +29,7 @@ export default function TotalsCard({
           </span>
 
           <span className="text-white">
-            US$ {subtotal.toFixed(2)}
+            {formatCurrency(subtotal, currency)}
           </span>
 
         </div>
@@ -37,7 +41,7 @@ export default function TotalsCard({
           </span>
 
           <span className="text-white">
-            US$ {discount.toFixed(2)}
+            {formatCurrency(discount, currency)}
           </span>
 
         </div>
@@ -51,7 +55,7 @@ export default function TotalsCard({
             </span>
 
             <span className="text-2xl font-bold text-yellow-500">
-              US$ {total.toFixed(2)}
+              {formatCurrency(total, currency)}
             </span>
 
           </div>

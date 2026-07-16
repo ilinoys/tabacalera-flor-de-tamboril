@@ -95,11 +95,13 @@ export default function QuotationForm({
       />
 
       <ProductSelector
+        currency={currency}
         onAdd={onAddProduct}
       />
 
       <QuotationItems
         items={items}
+        currency={currency}
         onUpdateQuantity={onUpdateQuantity}
         onRemove={onRemoveProduct}
       />

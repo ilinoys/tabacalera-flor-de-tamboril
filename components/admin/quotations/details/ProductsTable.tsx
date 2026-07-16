@@ -1,3 +1,5 @@
+import { formatCurrency } from "@/lib/currency";
+
 interface Item {
   id: string;
   quantity: number;
@@ -10,10 +12,12 @@ interface Item {
 
 interface Props {
   items: Item[];
+  currency: string;
 }
 
 export default function ProductsTable({
   items,
+  currency,
 }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
@@ -70,11 +74,14 @@ export default function ProductsTable({
               </td>
 
               <td className="p-4 text-right text-white">
-                US$ {item.price.toFixed(2)}
+                {formatCurrency(item.price, currency)}
               </td>
 
               <td className="p-4 text-right font-bold text-yellow-500">
-                US$ {(item.quantity * item.price).toFixed(2)}
+                {formatCurrency(
+                  item.quantity * item.price,
+                  currency
+                )}
               </td>
 
             </tr>

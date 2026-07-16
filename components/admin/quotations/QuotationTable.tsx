@@ -7,6 +7,8 @@ import {
   useState,
 } from "react";
 
+import { formatCurrency } from "@/lib/currency";
+
 import QuotationActions from "./QuotationActions";
 import StatusBadge from "./StatusBadge";
 
@@ -310,7 +312,10 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
               </td>
 
               <td className="p-4 text-white">
-                US$ {quotation.total.toFixed(2)}
+                {formatCurrency(
+                  quotation.total,
+                  quotation.currency
+                )}
               </td>
 
               <td className="p-4 text-neutral-300">

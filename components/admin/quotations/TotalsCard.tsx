@@ -1,14 +1,18 @@
 "use client";
 
+import { formatCurrency } from "@/lib/currency";
+
 interface Props {
   subtotal: number;
   discount: number;
+  currency: string;
   onDiscountChange: (value: number) => void;
 }
 
 export default function TotalsCard({
   subtotal,
   discount,
+  currency,
   onDiscountChange,
 }: Props) {
   const total = subtotal - discount;
@@ -29,7 +33,7 @@ export default function TotalsCard({
           </span>
 
           <span className="font-bold text-white">
-            US$ {subtotal.toFixed(2)}
+            {formatCurrency(subtotal, currency)}
           </span>
 
         </div>
@@ -62,7 +66,7 @@ export default function TotalsCard({
             </span>
 
             <span className="text-3xl font-bold text-yellow-500">
-              US$ {total.toFixed(2)}
+              {formatCurrency(total, currency)}
             </span>
 
           </div>

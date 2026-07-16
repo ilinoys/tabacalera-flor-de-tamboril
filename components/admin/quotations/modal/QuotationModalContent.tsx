@@ -89,6 +89,7 @@ export default function QuotationModalContent(props: Props) {
         <TotalsCard
           subtotal={props.subtotal}
           discount={props.discount}
+          currency={props.currency}
           onDiscountChange={props.onDiscountChange}
         />
 

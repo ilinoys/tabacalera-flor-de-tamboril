@@ -49,6 +49,16 @@ function generateQuotationNumber() {
   return `COT-${year}${month}${day}-${random}`;
 }
 
+async function getDefaultCurrency() {
+  const settings = await prisma.companySettings.findFirst({
+    select: {
+      currency: true,
+    },
+  });
+
+  return settings?.currency ?? Currency.USD;
+}
+
 export async function createQuotation(
   data: SaveQuotationData
 ) {
@@ -57,6 +67,8 @@ export async function createQuotation(
       "Debe agregar al menos un producto."
     );
   }
+
+  const currency = data.currency ?? await getDefaultCurrency();
 
   return prisma.quotation.create({
     data: {
@@ -74,7 +86,7 @@ export async function createQuotation(
 
       validUntil: data.validUntil ?? null,
 
-      currency: data.currency ?? Currency.USD,
+      currency,
 
       paymentTerms: data.paymentTerms || null,
 

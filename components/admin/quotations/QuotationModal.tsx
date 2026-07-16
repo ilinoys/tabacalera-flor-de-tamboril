@@ -1,6 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 
 import CustomerSelector from "./CustomerSelector";
 import ProductSelector from "./ProductSelector";
@@ -74,6 +78,8 @@ export default function QuotationModal({
   onClose,
 }: Props) {
   const editing = mode === "edit" && !!quotation;
+  const [defaultCurrency, setDefaultCurrency] =
+    useState("USD");
 
   const [customerId, setCustomerId] = useState(
     quotation?.customerId ?? ""
@@ -121,6 +127,45 @@ export default function QuotationModal({
       0
     );
   }, [items]);
+
+  useEffect(() => {
+    if (quotation || mode !== "create") {
+      return;
+    }
+
+    let cancelled = false;
+
+    async function loadDefaultCurrency() {
+      try {
+        const response = await fetch("/api/configuracion", {
+          cache: "no-store",
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            "No se pudo cargar la moneda predeterminada."
+          );
+        }
+
+        const settings = await response.json();
+        const nextCurrency =
+          settings?.currency === "DOP" ? "DOP" : "USD";
+
+        if (!cancelled) {
+          setDefaultCurrency(nextCurrency);
+          setCurrency(nextCurrency);
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    void loadDefaultCurrency();
+
+    return () => {
+      cancelled = true;
+    };
+  }, [mode, quotation]);
 
   function addProduct(product: Product) {
     const exists = items.find(
@@ -184,7 +229,7 @@ export default function QuotationModal({
     setItems([]);
     setDiscount(0);
     setValidUntil("");
-    setCurrency("USD");
+    setCurrency(defaultCurrency);
     setPaymentTerms("");
     setDeliveryTime("");
     setIncoterm("");
@@ -300,6 +345,7 @@ export default function QuotationModal({
             />
 
             <ProductSelector
+              currency={currency}
               onAdd={addProduct}
             />
 
@@ -320,6 +366,7 @@ export default function QuotationModal({
 
             <QuotationItems
               items={items}
+              currency={currency}
               onUpdateQuantity={updateQuantity}
               onRemove={removeProduct}
             />
@@ -331,6 +378,7 @@ export default function QuotationModal({
             <TotalsCard
               subtotal={subtotal}
               discount={discount}
+              currency={currency}
               onDiscountChange={setDiscount}
             />
 

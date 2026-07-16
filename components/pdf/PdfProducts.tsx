@@ -4,6 +4,8 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 
+import { formatCurrency } from "@/lib/currency";
+
 interface Item {
   id: string;
   quantity: number;
@@ -78,17 +80,6 @@ export default function PdfProducts({
   items,
   currency = "USD",
 }: Props) {
-  function formatMoney(value: number) {
-    const prefix =
-      currency === "DOP"
-        ? "RD$"
-        : currency === "EUR"
-        ? "EUR"
-        : "US$";
-
-    return `${prefix} ${value.toFixed(2)}`;
-  }
-
   return (
     <View>
 
@@ -134,11 +125,14 @@ export default function PdfProducts({
             </Text>
 
             <Text style={styles.price}>
-              {formatMoney(item.price)}
+              {formatCurrency(item.price, currency)}
             </Text>
 
             <Text style={styles.total}>
-              {formatMoney(item.quantity * item.price)}
+              {formatCurrency(
+                item.quantity * item.price,
+                currency
+              )}
             </Text>
 
           </View>

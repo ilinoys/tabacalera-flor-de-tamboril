@@ -1,5 +1,7 @@
 "use client";
 
+import { formatCurrency } from "@/lib/currency";
+
 interface Item {
   productId: string;
   name: string;
@@ -9,6 +11,7 @@ interface Item {
 
 interface Props {
   items: Item[];
+  currency: string;
   onUpdateQuantity: (
     productId: string,
     quantity: number
@@ -18,6 +21,7 @@ interface Props {
 
 export default function QuotationItems({
   items,
+  currency,
   onUpdateQuantity,
   onRemove,
 }: Props) {
@@ -93,11 +97,14 @@ export default function QuotationItems({
               </td>
 
               <td className="p-4 text-center text-white">
-                US$ {item.price.toFixed(2)}
+                {formatCurrency(item.price, currency)}
               </td>
 
               <td className="p-4 text-center font-bold text-yellow-500">
-                US$ {(item.price * item.quantity).toFixed(2)}
+                {formatCurrency(
+                  item.price * item.quantity,
+                  currency
+                )}
               </td>
 
               <td className="p-4 text-center">

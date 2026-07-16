@@ -85,12 +85,14 @@ export default async function QuotationDetailsPage({
 
         <ProductsTable
           items={quotation.items}
+          currency={quotation.currency}
         />
 
         <TotalsCard
           subtotal={quotation.subtotal}
           discount={quotation.discount}
           total={quotation.total}
+          currency={quotation.currency}
         />
 
         <FooterInfo />
