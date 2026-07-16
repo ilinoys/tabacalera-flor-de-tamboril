@@ -78,6 +78,49 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
     }
   }
 
+  async function deleteQuotation(quotation: Quotation) {
+    const confirmed = window.confirm(
+      `Eliminar la cotizacion ${quotation.quotationNumber}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/cotizaciones/${quotation.id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ??
+            "No se pudo eliminar la cotizacion."
+        );
+      }
+
+      setQuotations((currentQuotations) =>
+        currentQuotations.filter(
+          (currentQuotation) =>
+            currentQuotation.id !== quotation.id
+        )
+      );
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Ocurrio un error al eliminar la cotizacion."
+      );
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     reload: loadQuotations,
   }));
@@ -196,7 +239,7 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
                     alert("Proximo Sprint");
                   }}
                   onDelete={() => {
-                    alert("Proximo Sprint");
+                    void deleteQuotation(quotation);
                   }}
                 />
 
