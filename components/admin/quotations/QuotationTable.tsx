@@ -1,52 +1,74 @@
 "use client";
 
 import {
+  forwardRef,
   useEffect,
   useImperativeHandle,
   useState,
-  forwardRef,
 } from "react";
 
-import StatusBadge from "./StatusBadge";
 import QuotationActions from "./QuotationActions";
+import StatusBadge from "./StatusBadge";
 
-interface Quotation {
+export interface Quotation {
   id: string;
   quotationNumber: string;
-
+  customerId: string;
   customer: {
     customerName: string;
     company?: string | null;
   };
-
   status: string;
-
   subtotal: number;
   discount: number;
   total: number;
-
+  notes?: string | null;
+  validUntil?: string | null;
+  currency: string;
+  paymentTerms?: string | null;
+  deliveryTime?: string | null;
+  incoterm?: string | null;
+  salesperson?: string | null;
   createdAt: string;
+  items: {
+    productId: string;
+    quantity: number;
+    price: number;
+    product: {
+      name: string;
+    };
+  }[];
 }
 
 export interface QuotationTableHandle {
   reload: () => Promise<void>;
 }
 
-const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
+interface Props {
+  onEdit: (quotation: Quotation) => void;
+}
+
+async function fetchQuotations() {
+  const response = await fetch("/api/cotizaciones", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    throw new Error("No se pudieron cargar las cotizaciones.");
+  }
+
+  return response.json() as Promise<Quotation[]>;
+}
+
+const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
+  onEdit,
+}, ref) => {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(true);
 
   async function loadQuotations() {
     try {
-      const response = await fetch("/api/cotizaciones", {
-        cache: "no-store",
-      });
-
-      if (!response.ok) {
-        throw new Error();
-      }
-
-      const data = await response.json();
+      const data = await fetchQuotations();
 
       setQuotations(data);
     } catch (error) {
@@ -61,7 +83,7 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
   }));
 
   useEffect(() => {
-    loadQuotations();
+    void loadQuotations();
   }, []);
 
   if (loading) {
@@ -94,7 +116,7 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
           <tr>
 
             <th className="p-4 text-left text-yellow-500">
-              Número
+              Numero
             </th>
 
             <th className="p-4 text-left text-yellow-500">
@@ -168,13 +190,13 @@ const QuotationTable = forwardRef<QuotationTableHandle>((props, ref) => {
                       `/admin/cotizaciones/${quotation.id}`;
                   }}
                   onEdit={() => {
-                    alert("Próximo Sprint");
+                    onEdit(quotation);
                   }}
                   onDuplicate={() => {
-                    alert("Próximo Sprint");
+                    alert("Proximo Sprint");
                   }}
                   onDelete={() => {
-                    alert("Próximo Sprint");
+                    alert("Proximo Sprint");
                   }}
                 />
 

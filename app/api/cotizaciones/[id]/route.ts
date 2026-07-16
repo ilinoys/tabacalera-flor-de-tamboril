@@ -3,8 +3,13 @@ import { NextResponse } from "next/server";
 import {
   deleteQuotation,
   getQuotation,
+  updateQuotation,
   updateQuotationStatus,
 } from "@/services/quotationService";
+import {
+  Currency,
+  Incoterm,
+} from "@prisma/client";
 
 export async function GET(
   request: Request,
@@ -50,10 +55,33 @@ export async function PATCH(
 
     const body = await request.json();
 
-    const quotation = await updateQuotationStatus(
-      id,
-      body.status
-    );
+    if (body.status && !body.items) {
+      const quotation = await updateQuotationStatus(
+        id,
+        body.status
+      );
+
+      return NextResponse.json(quotation);
+    }
+
+    const quotation = await updateQuotation(id, {
+      customerId: body.customerId,
+      subtotal: Number(body.subtotal),
+      discount: Number(body.discount || 0),
+      total: Number(body.total),
+      notes: body.notes || "",
+      validUntil: body.validUntil
+        ? new Date(body.validUntil)
+        : undefined,
+      currency: body.currency as Currency | undefined,
+      paymentTerms: body.paymentTerms || "",
+      deliveryTime: body.deliveryTime || "",
+      incoterm: body.incoterm
+        ? (body.incoterm as Incoterm)
+        : undefined,
+      salesperson: body.salesperson || "",
+      items: body.items,
+    });
 
     return NextResponse.json(quotation);
   } catch (error) {

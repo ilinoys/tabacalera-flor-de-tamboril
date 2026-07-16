@@ -7,20 +7,30 @@ import AdminSidebar from "@/components/admin/AdminSidebar";
 
 import QuotationModal from "@/components/admin/quotations/QuotationModal";
 import QuotationTable, {
+  Quotation,
   QuotationTableHandle,
 } from "@/components/admin/quotations/QuotationTable";
 
 export default function QuotationsPage() {
   const [openModal, setOpenModal] = useState(false);
+  const [selectedQuotation, setSelectedQuotation] =
+    useState<Quotation | null>(null);
 
   const tableRef = useRef<QuotationTableHandle>(null);
 
   function openQuotationModal() {
+    setSelectedQuotation(null);
+    setOpenModal(true);
+  }
+
+  function openEditQuotation(quotation: Quotation) {
+    setSelectedQuotation(quotation);
     setOpenModal(true);
   }
 
   function closeQuotationModal() {
     setOpenModal(false);
+    setSelectedQuotation(null);
 
     tableRef.current?.reload();
   }
@@ -59,14 +69,19 @@ export default function QuotationsPage() {
 
           </div>
 
-          <QuotationTable ref={tableRef} />
+          <QuotationTable
+            ref={tableRef}
+            onEdit={openEditQuotation}
+          />
 
         </div>
 
       </div>
 
       <QuotationModal
+        key={selectedQuotation?.id ?? "new-quotation"}
         open={openModal}
+        quotation={selectedQuotation}
         onClose={closeQuotationModal}
       />
 

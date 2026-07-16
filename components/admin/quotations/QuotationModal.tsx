@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import CustomerSelector from "./CustomerSelector";
 import ProductSelector from "./ProductSelector";
 import QuotationItems from "./QuotationItems";
+import QuotationOptions from "./QuotationOptions";
 import TotalsCard from "./TotalsCard";
 
 interface Product {
@@ -21,20 +22,94 @@ interface Item {
   quantity: number;
 }
 
+interface Quotation {
+  id: string;
+  customerId: string;
+  discount: number;
+  notes?: string | null;
+  validUntil?: string | null;
+  currency: string;
+  paymentTerms?: string | null;
+  deliveryTime?: string | null;
+  incoterm?: string | null;
+  salesperson?: string | null;
+  items: {
+    productId: string;
+    quantity: number;
+    price: number;
+    product: {
+      name: string;
+    };
+  }[];
+}
+
 interface Props {
   open: boolean;
+  quotation?: Quotation | null;
   onClose: () => void;
+}
+
+function formatDateInput(value?: string | null) {
+  if (!value) return "";
+
+  return new Date(value).toISOString().slice(0, 10);
+}
+
+function getInitialItems(quotation?: Quotation | null): Item[] {
+  return (
+    quotation?.items.map((item) => ({
+      productId: item.productId,
+      name: item.product.name,
+      price: item.price,
+      quantity: item.quantity,
+    })) ?? []
+  );
 }
 
 export default function QuotationModal({
   open,
+  quotation,
   onClose,
 }: Props) {
-  const [customerId, setCustomerId] = useState("");
+  const editing = !!quotation;
 
-  const [items, setItems] = useState<Item[]>([]);
+  const [customerId, setCustomerId] = useState(
+    quotation?.customerId ?? ""
+  );
 
-  const [discount, setDiscount] = useState(0);
+  const [items, setItems] = useState<Item[]>(() =>
+    getInitialItems(quotation)
+  );
+
+  const [discount, setDiscount] = useState(
+    quotation?.discount ?? 0
+  );
+
+  const [notes] = useState(quotation?.notes ?? "");
+
+  const [validUntil, setValidUntil] = useState(
+    formatDateInput(quotation?.validUntil)
+  );
+
+  const [currency, setCurrency] = useState(
+    quotation?.currency ?? "USD"
+  );
+
+  const [paymentTerms, setPaymentTerms] = useState(
+    quotation?.paymentTerms ?? ""
+  );
+
+  const [deliveryTime, setDeliveryTime] = useState(
+    quotation?.deliveryTime ?? ""
+  );
+
+  const [incoterm, setIncoterm] = useState(
+    quotation?.incoterm ?? ""
+  );
+
+  const [salesperson, setSalesperson] = useState(
+    quotation?.salesperson ?? ""
+  );
 
   const [saving, setSaving] = useState(false);
 
@@ -102,6 +177,18 @@ export default function QuotationModal({
     );
   }
 
+  function resetForm() {
+    setCustomerId("");
+    setItems([]);
+    setDiscount(0);
+    setValidUntil("");
+    setCurrency("USD");
+    setPaymentTerms("");
+    setDeliveryTime("");
+    setIncoterm("");
+    setSalesperson("");
+  }
+
   async function saveQuotation() {
     if (!customerId) {
       alert("Debe seleccionar un cliente.");
@@ -116,51 +203,60 @@ export default function QuotationModal({
     try {
       setSaving(true);
 
-      const response = await fetch("/api/cotizaciones", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customerId,
-          subtotal,
-          discount,
-          total: subtotal - discount,
-          notes: "",
-          items: items.map((item) => ({
-            productId: item.productId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
-        }),
-      });
+      const response = await fetch(
+        editing
+          ? `/api/cotizaciones/${quotation.id}`
+          : "/api/cotizaciones",
+        {
+          method: editing ? "PATCH" : "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            customerId,
+            subtotal,
+            discount,
+            total: subtotal - discount,
+            notes,
+            validUntil: validUntil || null,
+            currency,
+            paymentTerms,
+            deliveryTime,
+            incoterm: incoterm || null,
+            salesperson,
+            items: items.map((item) => ({
+              productId: item.productId,
+              quantity: item.quantity,
+              price: item.price,
+            })),
+          }),
+        }
+      );
 
       const result = await response.json();
 
       if (!response.ok) {
         throw new Error(
           result.error ??
-            "No se pudo crear la cotización."
+            "No se pudo guardar la cotizacion."
         );
       }
 
-      alert("✅ Cotización creada correctamente.");
+      alert(
+        editing
+          ? "Cotizacion actualizada correctamente."
+          : "Cotizacion creada correctamente."
+      );
 
-      setCustomerId("");
-      setItems([]);
-      setDiscount(0);
-
+      resetForm();
       onClose();
-
-      // En el siguiente paso refrescaremos la tabla
-      // automáticamente sin recargar la página.
     } catch (error) {
       console.error(error);
 
       alert(
         error instanceof Error
           ? error.message
-          : "Ocurrió un error."
+          : "Ocurrio un error."
       );
     } finally {
       setSaving(false);
@@ -177,7 +273,9 @@ export default function QuotationModal({
         <div className="mb-8 flex items-center justify-between">
 
           <h2 className="text-3xl font-bold text-white">
-            Nueva Cotización
+            {editing
+              ? "Editar Cotizacion"
+              : "Nueva Cotizacion"}
           </h2>
 
           <button
@@ -201,6 +299,21 @@ export default function QuotationModal({
 
             <ProductSelector
               onAdd={addProduct}
+            />
+
+            <QuotationOptions
+              validUntil={validUntil}
+              onValidUntilChange={setValidUntil}
+              currency={currency}
+              onCurrencyChange={setCurrency}
+              paymentTerms={paymentTerms}
+              onPaymentTermsChange={setPaymentTerms}
+              deliveryTime={deliveryTime}
+              onDeliveryTimeChange={setDeliveryTime}
+              incoterm={incoterm}
+              onIncotermChange={setIncoterm}
+              salesperson={salesperson}
+              onSalespersonChange={setSalesperson}
             />
 
             <QuotationItems
@@ -227,7 +340,9 @@ export default function QuotationModal({
             >
               {saving
                 ? "Guardando..."
-                : "Guardar Cotización"}
+                : editing
+                ? "Actualizar Cotizacion"
+                : "Guardar Cotizacion"}
             </button>
 
           </div>

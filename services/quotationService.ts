@@ -5,7 +5,13 @@ import {
   QuotationStatus,
 } from "@prisma/client";
 
-interface CreateQuotationData {
+interface QuotationItemData {
+  productId: string;
+  quantity: number;
+  price: number;
+}
+
+interface SaveQuotationData {
   customerId: string;
 
   subtotal: number;
@@ -26,11 +32,7 @@ interface CreateQuotationData {
 
   salesperson?: string;
 
-  items: {
-    productId: string;
-    quantity: number;
-    price: number;
-  }[];
+  items: QuotationItemData[];
 }
 
 function generateQuotationNumber() {
@@ -48,7 +50,7 @@ function generateQuotationNumber() {
 }
 
 export async function createQuotation(
-  data: CreateQuotationData
+  data: SaveQuotationData
 ) {
   if (!data.items.length) {
     throw new Error(
@@ -100,6 +102,73 @@ export async function createQuotation(
         },
       },
     },
+  });
+}
+
+export async function updateQuotation(
+  id: string,
+  data: SaveQuotationData
+) {
+  if (!data.items.length) {
+    throw new Error(
+      "Debe agregar al menos un producto."
+    );
+  }
+
+  return prisma.$transaction(async (tx) => {
+    await tx.quotationItem.deleteMany({
+      where: {
+        quotationId: id,
+      },
+    });
+
+    return tx.quotation.update({
+      where: {
+        id,
+      },
+
+      data: {
+        customerId: data.customerId,
+
+        subtotal: Number(data.subtotal),
+
+        discount: Number(data.discount || 0),
+
+        total: Number(data.total),
+
+        notes: data.notes || null,
+
+        validUntil: data.validUntil ?? null,
+
+        currency: data.currency ?? Currency.USD,
+
+        paymentTerms: data.paymentTerms || null,
+
+        deliveryTime: data.deliveryTime || null,
+
+        incoterm: data.incoterm ?? null,
+
+        salesperson: data.salesperson || null,
+
+        items: {
+          create: data.items.map((item) => ({
+            productId: item.productId,
+            quantity: Number(item.quantity),
+            price: Number(item.price),
+          })),
+        },
+      },
+
+      include: {
+        customer: true,
+
+        items: {
+          include: {
+            product: true,
+          },
+        },
+      },
+    });
   });
 }
 
