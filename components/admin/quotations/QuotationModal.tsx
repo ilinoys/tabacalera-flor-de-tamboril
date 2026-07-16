@@ -46,6 +46,7 @@ interface Quotation {
 interface Props {
   open: boolean;
   quotation?: Quotation | null;
+  mode?: "create" | "edit" | "duplicate";
   onClose: () => void;
 }
 
@@ -69,9 +70,10 @@ function getInitialItems(quotation?: Quotation | null): Item[] {
 export default function QuotationModal({
   open,
   quotation,
+  mode = "create",
   onClose,
 }: Props) {
-  const editing = !!quotation;
+  const editing = mode === "edit" && !!quotation;
 
   const [customerId, setCustomerId] = useState(
     quotation?.customerId ?? ""

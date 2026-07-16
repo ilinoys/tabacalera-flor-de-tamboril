@@ -46,6 +46,7 @@ export interface QuotationTableHandle {
 
 interface Props {
   onEdit: (quotation: Quotation) => void;
+  onDuplicate: (quotation: Quotation) => void;
 }
 
 async function fetchQuotations() {
@@ -62,6 +63,7 @@ async function fetchQuotations() {
 
 const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
   onEdit,
+  onDuplicate,
 }, ref) => {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -236,7 +238,7 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
                     onEdit(quotation);
                   }}
                   onDuplicate={() => {
-                    alert("Proximo Sprint");
+                    onDuplicate(quotation);
                   }}
                   onDelete={() => {
                     void deleteQuotation(quotation);

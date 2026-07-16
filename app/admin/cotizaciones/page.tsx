@@ -15,22 +15,34 @@ export default function QuotationsPage() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedQuotation, setSelectedQuotation] =
     useState<Quotation | null>(null);
+  const [modalMode, setModalMode] = useState<
+    "create" | "edit" | "duplicate"
+  >("create");
 
   const tableRef = useRef<QuotationTableHandle>(null);
 
   function openQuotationModal() {
     setSelectedQuotation(null);
+    setModalMode("create");
     setOpenModal(true);
   }
 
   function openEditQuotation(quotation: Quotation) {
     setSelectedQuotation(quotation);
+    setModalMode("edit");
+    setOpenModal(true);
+  }
+
+  function openDuplicateQuotation(quotation: Quotation) {
+    setSelectedQuotation(quotation);
+    setModalMode("duplicate");
     setOpenModal(true);
   }
 
   function closeQuotationModal() {
     setOpenModal(false);
     setSelectedQuotation(null);
+    setModalMode("create");
 
     tableRef.current?.reload();
   }
@@ -72,6 +84,7 @@ export default function QuotationsPage() {
           <QuotationTable
             ref={tableRef}
             onEdit={openEditQuotation}
+            onDuplicate={openDuplicateQuotation}
           />
 
         </div>
@@ -79,9 +92,14 @@ export default function QuotationsPage() {
       </div>
 
       <QuotationModal
-        key={selectedQuotation?.id ?? "new-quotation"}
+        key={
+          selectedQuotation
+            ? `${modalMode}-${selectedQuotation.id}`
+            : "new-quotation"
+        }
         open={openModal}
         quotation={selectedQuotation}
+        mode={modalMode}
         onClose={closeQuotationModal}
       />
 
