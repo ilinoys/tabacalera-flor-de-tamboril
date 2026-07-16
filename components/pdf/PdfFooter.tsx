@@ -8,6 +8,19 @@ interface Props {
   paymentTerms?: string | null;
   deliveryTime?: string | null;
   incoterm?: string | null;
+  notes?: string | null;
+  company: {
+    name: string;
+    address: string;
+    city: string;
+    country: string;
+    phone?: string | null;
+    mobile?: string | null;
+    email?: string | null;
+    website?: string | null;
+    pdfFooter?: string | null;
+    showSignature: boolean;
+  };
 }
 
 const styles = StyleSheet.create({
@@ -66,6 +79,8 @@ export default function PdfFooter({
   paymentTerms,
   deliveryTime,
   incoterm,
+  notes,
+  company,
 }: Props) {
   return (
     <View style={styles.container}>
@@ -92,36 +107,55 @@ export default function PdfFooter({
           {paymentTerms || "-"}
         </Text>
 
-      </View>
+        {notes ? (
+          <>
+            <Text style={styles.text}>
+              Notas:
+            </Text>
 
-      <View style={styles.signatures}>
-
-        <View style={styles.signatureBox}>
-
-          <View style={styles.line} />
-
-          <Text style={styles.text}>
-            Firma del Cliente
-          </Text>
-
-        </View>
-
-        <View style={styles.signatureBox}>
-
-          <View style={styles.line} />
-
-          <Text style={styles.text}>
-            Flor de Tamboril
-          </Text>
-
-        </View>
+            <Text style={styles.text}>
+              {notes}
+            </Text>
+          </>
+        ) : null}
 
       </View>
+
+      {company.showSignature ? (
+        <View style={styles.signatures}>
+
+          <View style={styles.signatureBox}>
+
+            <View style={styles.line} />
+
+            <Text style={styles.text}>
+              Firma del Cliente
+            </Text>
+
+          </View>
+
+          <View style={styles.signatureBox}>
+
+            <View style={styles.line} />
+
+            <Text style={styles.text}>
+              {company.name}
+            </Text>
+
+          </View>
+
+        </View>
+      ) : null}
 
       <Text style={styles.company}>
-        FLOR DE TAMBORIL{"\n"}
-        Tamboril, Santiago, República Dominicana{"\n"}
-        www.flordetamboril.com
+        {company.pdfFooter ||
+          `${company.name}\n${company.address}, ${company.city}, ${company.country}`}
+        {"\n"}
+        {company.phone ? `Tel: ${company.phone}` : ""}
+        {company.mobile ? ` | Movil: ${company.mobile}` : ""}
+        {"\n"}
+        {company.email || ""}
+        {company.website ? ` | ${company.website}` : ""}
       </Text>
 
     </View>

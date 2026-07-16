@@ -16,6 +16,7 @@ interface Item {
 
 interface Props {
   items: Item[];
+  currency?: string;
 }
 
 const styles = StyleSheet.create({
@@ -75,7 +76,19 @@ const styles = StyleSheet.create({
 
 export default function PdfProducts({
   items,
+  currency = "USD",
 }: Props) {
+  function formatMoney(value: number) {
+    const prefix =
+      currency === "DOP"
+        ? "RD$"
+        : currency === "EUR"
+        ? "EUR"
+        : "US$";
+
+    return `${prefix} ${value.toFixed(2)}`;
+  }
+
   return (
     <View>
 
@@ -121,11 +134,11 @@ export default function PdfProducts({
             </Text>
 
             <Text style={styles.price}>
-              US$ {item.price.toFixed(2)}
+              {formatMoney(item.price)}
             </Text>
 
             <Text style={styles.total}>
-              US$ {(item.quantity * item.price).toFixed(2)}
+              {formatMoney(item.quantity * item.price)}
             </Text>
 
           </View>

@@ -58,7 +58,7 @@ export default function PdfTotals({
 }: Props) {
   const symbol =
     currency === "EUR"
-      ? "€"
+      ? "EUR"
       : currency === "DOP"
       ? "RD$"
       : "US$";

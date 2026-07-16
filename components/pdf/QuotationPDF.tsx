@@ -30,6 +30,23 @@ interface Customer {
   city: string;
 }
 
+interface Company {
+  name: string;
+  slogan?: string | null;
+  logoSrc?: string | null;
+  showLogo: boolean;
+  rnc?: string | null;
+  address: string;
+  city: string;
+  country: string;
+  phone?: string | null;
+  mobile?: string | null;
+  email?: string | null;
+  website?: string | null;
+  pdfFooter?: string | null;
+  showSignature: boolean;
+}
+
 interface Props {
   quotationNumber: string;
 
@@ -48,6 +65,10 @@ interface Props {
   incoterm?: string | null;
 
   salesperson?: string | null;
+
+  notes?: string | null;
+
+  company: Company;
 
   customer: Customer;
 
@@ -84,6 +105,8 @@ export default function QuotationPDF({
   deliveryTime,
   incoterm,
   salesperson,
+  notes,
+  company,
   customer,
   items,
   subtotal,
@@ -105,6 +128,7 @@ export default function QuotationPDF({
             validUntil={validUntil}
             status={status}
             currency={currency}
+            company={company}
           />
         </View>
 
@@ -118,6 +142,7 @@ export default function QuotationPDF({
         <View style={styles.section}>
           <PdfProducts
             items={items}
+            currency={currency}
           />
         </View>
 
@@ -135,6 +160,8 @@ export default function QuotationPDF({
             paymentTerms={paymentTerms}
             deliveryTime={deliveryTime}
             incoterm={incoterm}
+            notes={notes}
+            company={company}
           />
         </View>
 

@@ -12,6 +12,20 @@ interface Props {
   validUntil?: string | null;
   status: string;
   currency?: string;
+  company: {
+    name: string;
+    slogan?: string | null;
+    logoSrc?: string | null;
+    showLogo: boolean;
+    rnc?: string | null;
+    address: string;
+    city: string;
+    country: string;
+    phone?: string | null;
+    mobile?: string | null;
+    email?: string | null;
+    website?: string | null;
+  };
 }
 
 type AccessibleImageProps = ImageProps & {
@@ -106,29 +120,45 @@ export default function PdfHeader({
   validUntil,
   status,
   currency,
+  company,
 }: Props) {
   return (
     <View style={styles.container}>
       <View style={styles.left}>
-        <AccessibleImage
-          src="public/images/logo/logo.png"
-          style={styles.logo}
-          alt="Flor de Tamboril"
-        />
+        {company.showLogo && company.logoSrc ? (
+          <AccessibleImage
+            src={company.logoSrc}
+            style={styles.logo}
+            alt={company.name}
+          />
+        ) : null}
 
         <View>
           <Text style={styles.title}>
-            FLOR DE TAMBORIL
+            {company.name}
           </Text>
 
           <Text style={styles.subtitle}>
-            Dominican Premium Cigars
+            {company.slogan || "Dominican Premium Cigars"}
           </Text>
 
           <Text style={styles.company}>
-            Tamboril, Santiago{"\n"}
-            República Dominicana{"\n"}
-            www.flordetamboril.com
+            {company.address}
+            {", "}
+            {company.city}
+            {"\n"}
+            {company.country}
+            {company.rnc ? ` | RNC: ${company.rnc}` : ""}
+            {"\n"}
+            {company.phone ? `Tel: ${company.phone}` : ""}
+            {company.mobile
+              ? ` | Movil: ${company.mobile}`
+              : ""}
+            {"\n"}
+            {company.email || ""}
+            {company.website
+              ? ` | ${company.website}`
+              : ""}
           </Text>
         </View>
       </View>
@@ -147,7 +177,7 @@ export default function PdfHeader({
 
         <Text style={styles.row}>
           <Text style={styles.label}>
-            Válida hasta:
+            Valida hasta:
           </Text>{" "}
           {validUntil
             ? new Date(validUntil).toLocaleDateString()

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { renderToStream } from "@react-pdf/renderer";
+import { join } from "path";
 
 import { prisma } from "@/lib/prisma";
 import QuotationPDF from "@/components/pdf/QuotationPDF";
@@ -8,6 +9,28 @@ interface Props {
   params: Promise<{
     id: string;
   }>;
+}
+
+function resolveLogoPath(logo?: string | null) {
+  if (!logo) {
+    return join(
+      process.cwd(),
+      "public",
+      "images",
+      "logo",
+      "logo.png"
+    );
+  }
+
+  if (logo.startsWith("/")) {
+    return join(
+      process.cwd(),
+      "public",
+      logo.slice(1)
+    );
+  }
+
+  return logo;
 }
 
 export async function GET(
@@ -31,6 +54,9 @@ export async function GET(
       },
     });
 
+    const companySettings =
+      await prisma.companySettings.findFirst();
+
     if (!quotation) {
       return NextResponse.json(
         {
@@ -46,7 +72,41 @@ export async function GET(
       <QuotationPDF
         quotationNumber={quotation.quotationNumber}
         createdAt={quotation.createdAt.toISOString()}
+        validUntil={quotation.validUntil?.toISOString()}
         status={quotation.status}
+        currency={quotation.currency}
+        paymentTerms={quotation.paymentTerms}
+        deliveryTime={quotation.deliveryTime}
+        incoterm={quotation.incoterm}
+        salesperson={quotation.salesperson}
+        notes={quotation.notes}
+        company={{
+          name:
+            companySettings?.companyName ??
+            "FLOR DE TAMBORIL",
+          slogan:
+            companySettings?.slogan ??
+            "Dominican Premium Cigars",
+          logoSrc: resolveLogoPath(companySettings?.logo),
+          showLogo: companySettings?.showLogo ?? true,
+          rnc: companySettings?.rnc,
+          address:
+            companySettings?.address ??
+            "Tamboril, Santiago",
+          city: companySettings?.city ?? "Santiago",
+          country:
+            companySettings?.country ??
+            "Republica Dominicana",
+          phone: companySettings?.phone,
+          mobile: companySettings?.mobile,
+          email: companySettings?.email,
+          website:
+            companySettings?.website ??
+            "www.flordetamboril.com",
+          pdfFooter: companySettings?.pdfFooter,
+          showSignature:
+            companySettings?.showSignature ?? true,
+        }}
         customer={quotation.customer}
         items={quotation.items}
         subtotal={quotation.subtotal}
