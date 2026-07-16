@@ -10,6 +10,14 @@ import {
 import QuotationActions from "./QuotationActions";
 import StatusBadge from "./StatusBadge";
 
+const QUOTATION_STATUSES = [
+  "BORRADOR",
+  "ENVIADA",
+  "ACEPTADA",
+  "RECHAZADA",
+  "EXPIRADA",
+] as const;
+
 export interface Quotation {
   id: string;
   quotationNumber: string;
@@ -123,6 +131,68 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
     }
   }
 
+  async function updateQuotationStatus(
+    quotation: Quotation,
+    status: string
+  ) {
+    if (status === quotation.status) {
+      return;
+    }
+
+    const confirmed = window.confirm(
+      `Cambiar estado de ${quotation.quotationNumber} a ${status}?`
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const response = await fetch(
+        `/api/cotizaciones/${quotation.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            status,
+          }),
+        }
+      );
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          result.error ??
+            "No se pudo cambiar el estado."
+        );
+      }
+
+      setQuotations((currentQuotations) =>
+        currentQuotations.map((currentQuotation) =>
+          currentQuotation.id === quotation.id
+            ? {
+                ...currentQuotation,
+                status: result.status,
+              }
+            : currentQuotation
+        )
+      );
+
+      alert("Estado actualizado correctamente.");
+    } catch (error) {
+      console.error(error);
+
+      alert(
+        error instanceof Error
+          ? error.message
+          : "Ocurrio un error al cambiar el estado."
+      );
+    }
+  }
+
   useImperativeHandle(ref, () => ({
     reload: loadQuotations,
   }));
@@ -214,7 +284,29 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
               </td>
 
               <td className="p-4">
-                <StatusBadge status={quotation.status} />
+                <div className="flex flex-col gap-2">
+                  <StatusBadge status={quotation.status} />
+
+                  <select
+                    value={quotation.status}
+                    onChange={(event) => {
+                      void updateQuotationStatus(
+                        quotation,
+                        event.target.value
+                      );
+                    }}
+                    className="rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm font-bold text-white outline-none focus:border-yellow-500"
+                  >
+                    {QUOTATION_STATUSES.map((status) => (
+                      <option
+                        key={status}
+                        value={status}
+                      >
+                        {status}
+                      </option>
+                    ))}
+                  </select>
+                </div>
               </td>
 
               <td className="p-4 text-white">
