@@ -34,6 +34,7 @@ interface Props {
 
   currency: string;
   onCurrencyChange: (value: string) => void;
+  exchangeRate: number;
 
   paymentTerms: string;
   onPaymentTermsChange: (value: string) => void;
@@ -72,6 +73,7 @@ export default function QuotationModalContent(props: Props) {
           onValidUntilChange={props.onValidUntilChange}
           currency={props.currency}
           onCurrencyChange={props.onCurrencyChange}
+          exchangeRate={props.exchangeRate}
           paymentTerms={props.paymentTerms}
           onPaymentTermsChange={props.onPaymentTermsChange}
           deliveryTime={props.deliveryTime}
@@ -90,6 +92,7 @@ export default function QuotationModalContent(props: Props) {
           subtotal={props.subtotal}
           discount={props.discount}
           currency={props.currency}
+          exchangeRate={props.exchangeRate}
           onDiscountChange={props.onDiscountChange}
         />
 

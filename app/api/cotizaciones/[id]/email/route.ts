@@ -1,7 +1,10 @@
 import { NextResponse } from "next/server";
 
 import { prisma } from "@/lib/prisma";
-import { formatCurrency } from "@/lib/currency";
+import {
+  DEFAULT_EXCHANGE_RATE,
+  formatExchangeCurrency,
+} from "@/lib/exchange";
 import { sendQuotationEmail } from "@/services/emailService";
 
 interface Props {
@@ -56,9 +59,11 @@ export async function POST(
       "Te compartimos la cotizacion solicitada.",
       "",
       `Numero de cotizacion: ${quotation.quotationNumber}`,
-      `Total: ${formatCurrency(
+      `Total: ${formatExchangeCurrency(
         quotation.total,
-        quotation.currency
+        quotation.currency,
+        companySettings?.exchangeRate ??
+          DEFAULT_EXCHANGE_RATE
       )}`,
       `PDF: ${pdfUrl}`,
       "",

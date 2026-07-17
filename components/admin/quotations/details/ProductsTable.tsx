@@ -1,4 +1,4 @@
-import { formatCurrency } from "@/lib/currency";
+import { formatExchangeCurrency } from "@/lib/exchange";
 
 interface Item {
   id: string;
@@ -13,11 +13,13 @@ interface Item {
 interface Props {
   items: Item[];
   currency: string;
+  exchangeRate: number;
 }
 
 export default function ProductsTable({
   items,
   currency,
+  exchangeRate,
 }: Props) {
   return (
     <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
@@ -74,13 +76,18 @@ export default function ProductsTable({
               </td>
 
               <td className="p-4 text-right text-white">
-                {formatCurrency(item.price, currency)}
+                {formatExchangeCurrency(
+                  item.price,
+                  currency,
+                  exchangeRate
+                )}
               </td>
 
               <td className="p-4 text-right font-bold text-yellow-500">
-                {formatCurrency(
+                {formatExchangeCurrency(
                   item.quantity * item.price,
-                  currency
+                  currency,
+                  exchangeRate
                 )}
               </td>
 

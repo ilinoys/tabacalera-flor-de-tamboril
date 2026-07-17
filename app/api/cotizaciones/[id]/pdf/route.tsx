@@ -3,6 +3,7 @@ import { renderToStream } from "@react-pdf/renderer";
 import { join } from "path";
 
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_EXCHANGE_RATE } from "@/lib/exchange";
 import QuotationPDF from "@/components/pdf/QuotationPDF";
 
 interface Props {
@@ -75,6 +76,10 @@ export async function GET(
         validUntil={quotation.validUntil?.toISOString()}
         status={quotation.status}
         currency={quotation.currency}
+        exchangeRate={
+          companySettings?.exchangeRate ??
+          DEFAULT_EXCHANGE_RATE
+        }
         paymentTerms={quotation.paymentTerms}
         deliveryTime={quotation.deliveryTime}
         incoterm={quotation.incoterm}

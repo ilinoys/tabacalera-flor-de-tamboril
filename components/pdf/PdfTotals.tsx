@@ -4,13 +4,14 @@ import {
   StyleSheet,
 } from "@react-pdf/renderer";
 
-import { formatCurrency } from "@/lib/currency";
+import { formatExchangeCurrency } from "@/lib/exchange";
 
 interface Props {
   subtotal: number;
   discount: number;
   total: number;
   currency?: string;
+  exchangeRate: number;
 }
 
 const styles = StyleSheet.create({
@@ -57,6 +58,7 @@ export default function PdfTotals({
   discount,
   total,
   currency,
+  exchangeRate,
 }: Props) {
   return (
     <View style={styles.container}>
@@ -67,7 +69,11 @@ export default function PdfTotals({
           </Text>
 
           <Text>
-            {formatCurrency(subtotal, currency)}
+            {formatExchangeCurrency(
+              subtotal,
+              currency,
+              exchangeRate
+            )}
           </Text>
         </View>
 
@@ -77,7 +83,11 @@ export default function PdfTotals({
           </Text>
 
           <Text>
-            {formatCurrency(discount, currency)}
+            {formatExchangeCurrency(
+              discount,
+              currency,
+              exchangeRate
+            )}
           </Text>
         </View>
 
@@ -87,7 +97,11 @@ export default function PdfTotals({
           </Text>
 
           <Text style={styles.totalText}>
-            {formatCurrency(total, currency)}
+            {formatExchangeCurrency(
+              total,
+              currency,
+              exchangeRate
+            )}
           </Text>
         </View>
       </View>

@@ -1,6 +1,6 @@
 "use client";
 
-import { formatCurrency } from "@/lib/currency";
+import { formatExchangeCurrency } from "@/lib/exchange";
 
 interface Item {
   productId: string;
@@ -12,6 +12,7 @@ interface Item {
 interface Props {
   items: Item[];
   currency: string;
+  exchangeRate: number;
   onUpdateQuantity: (
     productId: string,
     quantity: number
@@ -22,6 +23,7 @@ interface Props {
 export default function QuotationItems({
   items,
   currency,
+  exchangeRate,
   onUpdateQuantity,
   onRemove,
 }: Props) {
@@ -97,13 +99,18 @@ export default function QuotationItems({
               </td>
 
               <td className="p-4 text-center text-white">
-                {formatCurrency(item.price, currency)}
+                {formatExchangeCurrency(
+                  item.price,
+                  currency,
+                  exchangeRate
+                )}
               </td>
 
               <td className="p-4 text-center font-bold text-yellow-500">
-                {formatCurrency(
+                {formatExchangeCurrency(
                   item.price * item.quantity,
-                  currency
+                  currency,
+                  exchangeRate
                 )}
               </td>
 

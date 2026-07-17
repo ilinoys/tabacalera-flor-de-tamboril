@@ -13,7 +13,7 @@ import {
   RefreshCw,
 } from "lucide-react";
 
-import { formatCurrency } from "@/lib/currency";
+import { formatExchangeCurrency } from "@/lib/exchange";
 
 interface Props {
   quotationId: string;
@@ -21,6 +21,7 @@ interface Props {
   customerName: string;
   total: number;
   currency: string;
+  exchangeRate: number;
 }
 
 export default function QuotationToolbar({
@@ -29,6 +30,7 @@ export default function QuotationToolbar({
   customerName,
   total,
   currency,
+  exchangeRate,
 }: Props) {
   const router = useRouter();
 
@@ -55,7 +57,11 @@ export default function QuotationToolbar({
       `Hola ${customerName},`,
       "",
       `Te compartimos la cotizacion ${quotationNumber}.`,
-      `Total: ${formatCurrency(total, currency)}`,
+      `Total: ${formatExchangeCurrency(
+        total,
+        currency,
+        exchangeRate
+      )}`,
       `PDF: ${pdfUrl}`,
     ].join("\n");
 

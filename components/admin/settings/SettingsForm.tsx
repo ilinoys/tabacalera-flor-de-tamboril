@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 
 import CompanyCard from "./CompanyCard";
 import CommercialCard from "./CommercialCard";
+import ExchangeRateCard from "./ExchangeRateCard";
 import ExportCard from "./ExportCard";
 import PdfCard from "./PdfCard";
 import WhatsappCard from "./WhatsappCard";
@@ -25,6 +26,9 @@ export interface Settings {
 
   email: string;
   website: string;
+
+  currency: string;
+  exchangeRate: number;
 
   language: string;
   timezone: string;
@@ -73,6 +77,9 @@ export default function SettingsForm() {
 
     email: "",
     website: "",
+
+    currency: "USD",
+    exchangeRate: 61.5,
 
     language: "es",
     timezone: "America/Santo_Domingo",
@@ -200,6 +207,13 @@ export default function SettingsForm() {
       <CommercialCard
         form={form}
         update={update}
+      />
+
+      <ExchangeRateCard
+        form={form}
+        update={update}
+        saving={saving}
+        onSave={save}
       />
 
       <ExportCard

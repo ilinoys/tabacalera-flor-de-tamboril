@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { formatCurrency } from "@/lib/currency";
+import { formatExchangeCurrency } from "@/lib/exchange";
 
 interface Product {
   id: string;
@@ -12,11 +12,13 @@ interface Product {
 
 interface Props {
   currency: string;
+  exchangeRate: number;
   onAdd: (product: Product) => void;
 }
 
 export default function ProductSelector({
   currency,
+  exchangeRate,
   onAdd,
 }: Props) {
   const [products, setProducts] = useState<Product[]>([]);
@@ -83,9 +85,10 @@ export default function ProductSelector({
               key={product.id}
               value={product.id}
             >
-              {product.name} | {formatCurrency(
+              {product.name} | {formatExchangeCurrency(
                 product.price,
-                currency
+                currency,
+                exchangeRate
               )}
             </option>
           ))}

@@ -6,6 +6,8 @@ import {
   useState,
 } from "react";
 
+import { DEFAULT_EXCHANGE_RATE } from "@/lib/exchange";
+
 import CustomerSelector from "./CustomerSelector";
 import ProductSelector from "./ProductSelector";
 import QuotationItems from "./QuotationItems";
@@ -33,6 +35,7 @@ interface Quotation {
   notes?: string | null;
   validUntil?: string | null;
   currency: string;
+  exchangeRate?: number | null;
   paymentTerms?: string | null;
   deliveryTime?: string | null;
   incoterm?: string | null;
@@ -80,6 +83,8 @@ export default function QuotationModal({
   const editing = mode === "edit" && !!quotation;
   const [defaultCurrency, setDefaultCurrency] =
     useState("USD");
+  const [defaultExchangeRate, setDefaultExchangeRate] =
+    useState(DEFAULT_EXCHANGE_RATE);
 
   const [customerId, setCustomerId] = useState(
     quotation?.customerId ?? ""
@@ -101,6 +106,10 @@ export default function QuotationModal({
 
   const [currency, setCurrency] = useState(
     quotation?.currency ?? "USD"
+  );
+
+  const [exchangeRate, setExchangeRate] = useState(
+    quotation?.exchangeRate ?? DEFAULT_EXCHANGE_RATE
   );
 
   const [paymentTerms, setPaymentTerms] = useState(
@@ -129,10 +138,6 @@ export default function QuotationModal({
   }, [items]);
 
   useEffect(() => {
-    if (quotation || mode !== "create") {
-      return;
-    }
-
     let cancelled = false;
 
     async function loadDefaultCurrency() {
@@ -150,10 +155,19 @@ export default function QuotationModal({
         const settings = await response.json();
         const nextCurrency =
           settings?.currency === "DOP" ? "DOP" : "USD";
+        const nextExchangeRate =
+          typeof settings?.exchangeRate === "number"
+            ? settings.exchangeRate
+            : DEFAULT_EXCHANGE_RATE;
 
         if (!cancelled) {
-          setDefaultCurrency(nextCurrency);
-          setCurrency(nextCurrency);
+          setDefaultExchangeRate(nextExchangeRate);
+          setExchangeRate(nextExchangeRate);
+
+          if (!quotation && mode === "create") {
+            setDefaultCurrency(nextCurrency);
+            setCurrency(nextCurrency);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -230,6 +244,7 @@ export default function QuotationModal({
     setDiscount(0);
     setValidUntil("");
     setCurrency(defaultCurrency);
+    setExchangeRate(defaultExchangeRate);
     setPaymentTerms("");
     setDeliveryTime("");
     setIncoterm("");
@@ -346,6 +361,7 @@ export default function QuotationModal({
 
             <ProductSelector
               currency={currency}
+              exchangeRate={exchangeRate}
               onAdd={addProduct}
             />
 
@@ -367,6 +383,7 @@ export default function QuotationModal({
             <QuotationItems
               items={items}
               currency={currency}
+              exchangeRate={exchangeRate}
               onUpdateQuantity={updateQuantity}
               onRemove={removeProduct}
             />
@@ -379,6 +396,7 @@ export default function QuotationModal({
               subtotal={subtotal}
               discount={discount}
               currency={currency}
+              exchangeRate={exchangeRate}
               onDiscountChange={setDiscount}
             />
 

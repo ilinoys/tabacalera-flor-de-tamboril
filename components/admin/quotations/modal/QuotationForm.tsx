@@ -37,6 +37,7 @@ interface Props {
 
   currency: string;
   onCurrencyChange: (value: string) => void;
+  exchangeRate: number;
 
   paymentTerms: string;
   onPaymentTermsChange: (value: string) => void;
@@ -62,6 +63,7 @@ export default function QuotationForm({
   onValidUntilChange,
   currency,
   onCurrencyChange,
+  exchangeRate,
   paymentTerms,
   onPaymentTermsChange,
   deliveryTime,
@@ -96,12 +98,14 @@ export default function QuotationForm({
 
       <ProductSelector
         currency={currency}
+        exchangeRate={exchangeRate}
         onAdd={onAddProduct}
       />
 
       <QuotationItems
         items={items}
         currency={currency}
+        exchangeRate={exchangeRate}
         onUpdateQuantity={onUpdateQuantity}
         onRemove={onRemoveProduct}
       />

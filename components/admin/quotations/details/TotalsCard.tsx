@@ -1,10 +1,11 @@
-import { formatCurrency } from "@/lib/currency";
+import { formatExchangeCurrency } from "@/lib/exchange";
 
 interface Props {
   subtotal: number;
   discount: number;
   total: number;
   currency: string;
+  exchangeRate: number;
 }
 
 export default function TotalsCard({
@@ -12,6 +13,7 @@ export default function TotalsCard({
   discount,
   total,
   currency,
+  exchangeRate,
 }: Props) {
   return (
     <div className="ml-auto mt-10 w-full max-w-md rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
@@ -29,7 +31,11 @@ export default function TotalsCard({
           </span>
 
           <span className="text-white">
-            {formatCurrency(subtotal, currency)}
+            {formatExchangeCurrency(
+              subtotal,
+              currency,
+              exchangeRate
+            )}
           </span>
 
         </div>
@@ -41,7 +47,11 @@ export default function TotalsCard({
           </span>
 
           <span className="text-white">
-            {formatCurrency(discount, currency)}
+            {formatExchangeCurrency(
+              discount,
+              currency,
+              exchangeRate
+            )}
           </span>
 
         </div>
@@ -55,7 +65,11 @@ export default function TotalsCard({
             </span>
 
             <span className="text-2xl font-bold text-yellow-500">
-              {formatCurrency(total, currency)}
+              {formatExchangeCurrency(
+                total,
+                currency,
+                exchangeRate
+              )}
             </span>
 
           </div>

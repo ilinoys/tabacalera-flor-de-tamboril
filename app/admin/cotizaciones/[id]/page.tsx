@@ -1,6 +1,7 @@
 import Link from "next/link";
 
 import { prisma } from "@/lib/prisma";
+import { DEFAULT_EXCHANGE_RATE } from "@/lib/exchange";
 
 import QuotationToolbar from "@/components/admin/quotations/details/QuotationToolbar";
 import QuotationHeader from "@/components/admin/quotations/details/QuotationHeader";
@@ -55,6 +56,16 @@ export default async function QuotationDetailsPage({
     );
   }
 
+  const companySettings =
+    await prisma.companySettings.findFirst({
+      select: {
+        exchangeRate: true,
+      },
+    });
+
+  const exchangeRate =
+    companySettings?.exchangeRate ?? DEFAULT_EXCHANGE_RATE;
+
   return (
     <main className="min-h-screen bg-neutral-950 p-8">
 
@@ -66,6 +77,7 @@ export default async function QuotationDetailsPage({
           customerName={quotation.customer.customerName}
           total={quotation.total}
           currency={quotation.currency}
+          exchangeRate={exchangeRate}
         />
 
         <QuotationHeader
@@ -86,6 +98,7 @@ export default async function QuotationDetailsPage({
         <ProductsTable
           items={quotation.items}
           currency={quotation.currency}
+          exchangeRate={exchangeRate}
         />
 
         <TotalsCard
@@ -93,6 +106,7 @@ export default async function QuotationDetailsPage({
           discount={quotation.discount}
           total={quotation.total}
           currency={quotation.currency}
+          exchangeRate={exchangeRate}
         />
 
         <FooterInfo />

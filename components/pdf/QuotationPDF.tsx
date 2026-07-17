@@ -57,6 +57,7 @@ interface Props {
   status: string;
 
   currency?: string;
+  exchangeRate: number;
 
   paymentTerms?: string | null;
 
@@ -101,6 +102,7 @@ export default function QuotationPDF({
   validUntil,
   status,
   currency,
+  exchangeRate,
   paymentTerms,
   deliveryTime,
   incoterm,
@@ -143,6 +145,7 @@ export default function QuotationPDF({
           <PdfProducts
             items={items}
             currency={currency}
+            exchangeRate={exchangeRate}
           />
         </View>
 
@@ -152,6 +155,7 @@ export default function QuotationPDF({
             discount={discount}
             total={total}
             currency={currency}
+            exchangeRate={exchangeRate}
           />
         </View>
 

@@ -7,7 +7,10 @@ import {
   useState,
 } from "react";
 
-import { formatCurrency } from "@/lib/currency";
+import {
+  DEFAULT_EXCHANGE_RATE,
+  formatExchangeCurrency,
+} from "@/lib/exchange";
 
 import QuotationActions from "./QuotationActions";
 import StatusBadge from "./StatusBadge";
@@ -77,6 +80,8 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
 }, ref) => {
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [loading, setLoading] = useState(true);
+  const [exchangeRate, setExchangeRate] =
+    useState(DEFAULT_EXCHANGE_RATE);
 
   async function loadQuotations() {
     try {
@@ -200,7 +205,27 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
   }));
 
   useEffect(() => {
-    void loadQuotations();
+    async function loadInitialData() {
+      try {
+        const response = await fetch("/api/configuracion", {
+          cache: "no-store",
+        });
+
+        if (response.ok) {
+          const settings = await response.json();
+
+          if (typeof settings?.exchangeRate === "number") {
+            setExchangeRate(settings.exchangeRate);
+          }
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      await loadQuotations();
+    }
+
+    void loadInitialData();
   }, []);
 
   if (loading) {
@@ -312,9 +337,10 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
               </td>
 
               <td className="p-4 text-white">
-                {formatCurrency(
+                {formatExchangeCurrency(
                   quotation.total,
-                  quotation.currency
+                  quotation.currency,
+                  exchangeRate
                 )}
               </td>
 

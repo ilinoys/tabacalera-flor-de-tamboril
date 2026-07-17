@@ -201,6 +201,8 @@ model CompanySettings {
   // Comercial
   currency Currency @default(USD)
 
+  exchangeRate Float @default(61.5)
+
   defaultIncoterm Incoterm?
 
   paymentTerms String?
