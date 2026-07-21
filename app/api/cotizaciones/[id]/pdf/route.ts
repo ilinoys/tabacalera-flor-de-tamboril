@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { renderToStream } from "@react-pdf/renderer";
+import type { DocumentProps } from "@react-pdf/renderer";
 import { join } from "path";
+import { createElement } from "react";
+import type { ReactElement } from "react";
 
 import { prisma } from "@/lib/prisma";
 import { DEFAULT_EXCHANGE_RATE } from "@/lib/exchange";
@@ -69,23 +72,21 @@ export async function GET(
       );
     }
 
-    const stream = await renderToStream(
-      <QuotationPDF
-        quotationNumber={quotation.quotationNumber}
-        createdAt={quotation.createdAt.toISOString()}
-        validUntil={quotation.validUntil?.toISOString()}
-        status={quotation.status}
-        currency={quotation.currency}
-        exchangeRate={
+    const pdfDocument = createElement(QuotationPDF, {
+        quotationNumber: quotation.quotationNumber,
+        createdAt: quotation.createdAt.toISOString(),
+        validUntil: quotation.validUntil?.toISOString(),
+        status: quotation.status,
+        currency: quotation.currency,
+        exchangeRate:
           companySettings?.exchangeRate ??
-          DEFAULT_EXCHANGE_RATE
-        }
-        paymentTerms={quotation.paymentTerms}
-        deliveryTime={quotation.deliveryTime}
-        incoterm={quotation.incoterm}
-        salesperson={quotation.salesperson}
-        notes={quotation.notes}
-        company={{
+          DEFAULT_EXCHANGE_RATE,
+        paymentTerms: quotation.paymentTerms,
+        deliveryTime: quotation.deliveryTime,
+        incoterm: quotation.incoterm,
+        salesperson: quotation.salesperson,
+        notes: quotation.notes,
+        company: {
           name:
             companySettings?.companyName ??
             "FLOR DE TAMBORIL",
@@ -111,14 +112,15 @@ export async function GET(
           pdfFooter: companySettings?.pdfFooter,
           showSignature:
             companySettings?.showSignature ?? true,
-        }}
-        customer={quotation.customer}
-        items={quotation.items}
-        subtotal={quotation.subtotal}
-        discount={quotation.discount}
-        total={quotation.total}
-      />
-    );
+        },
+        customer: quotation.customer,
+        items: quotation.items,
+        subtotal: quotation.subtotal,
+        discount: quotation.discount,
+        total: quotation.total,
+      }) as ReactElement<DocumentProps>;
+
+    const stream = await renderToStream(pdfDocument);
 
     return new Response(stream as unknown as ReadableStream, {
       headers: {
