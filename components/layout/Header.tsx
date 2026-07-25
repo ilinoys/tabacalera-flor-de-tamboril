@@ -84,9 +84,13 @@ export default function Header() {
             )}
           </Link>
 
-          <button className="text-white hover:text-yellow-500">
-            <User size={22} />
-          </button>
+          <Link
+  href="/login"
+  className="text-white hover:text-yellow-500 transition-colors"
+  title="Iniciar sesión"
+>
+  <User size={22} />
+</Link>
 
           <button className="text-white lg:hidden">
             <Menu size={28} />
