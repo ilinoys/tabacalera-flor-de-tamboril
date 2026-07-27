@@ -25,6 +25,26 @@ type LoginResponse = {
   error?: string;
 };
 
+const AUTH_CHANGED_EVENT = "flor-auth-changed";
+
+async function fetchCurrentUser() {
+  const response = await fetch("/api/auth/me", {
+    cache: "no-store",
+  });
+
+  if (!response.ok) {
+    return null;
+  }
+
+  const data = (await response.json()) as { user: AuthUser | null };
+
+  return data.user;
+}
+
+function notifyAuthChanged() {
+  window.dispatchEvent(new Event(AUTH_CHANGED_EVENT));
+}
+
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -33,19 +53,10 @@ export function useAuth() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/auth/me", {
-        cache: "no-store",
-      });
+      const currentUser = await fetchCurrentUser();
+      setUser(currentUser);
 
-      if (!response.ok) {
-        setUser(null);
-        return null;
-      }
-
-      const data = (await response.json()) as { user: AuthUser | null };
-      setUser(data.user);
-
-      return data.user;
+      return currentUser;
     } finally {
       setIsLoading(false);
     }
@@ -69,6 +80,7 @@ export function useAuth() {
     }
 
     setUser(data.user);
+    notifyAuthChanged();
 
     return {
       ok: true,
@@ -81,6 +93,7 @@ export function useAuth() {
       method: "POST",
     });
     setUser(null);
+    notifyAuthChanged();
   }, []);
 
   useEffect(() => {
@@ -90,24 +103,10 @@ export function useAuth() {
       setIsLoading(true);
 
       try {
-        const response = await fetch("/api/auth/me", {
-          cache: "no-store",
-        });
-
-        if (!response.ok) {
-          if (!cancelled) {
-            setUser(null);
-          }
-
-          return;
-        }
-
-        const data = (await response.json()) as {
-          user: AuthUser | null;
-        };
+        const currentUser = await fetchCurrentUser();
 
         if (!cancelled) {
-          setUser(data.user);
+          setUser(currentUser);
         }
       } finally {
         if (!cancelled) {
@@ -118,8 +117,15 @@ export function useAuth() {
 
     void loadUser();
 
+    function handleAuthChanged() {
+      void loadUser();
+    }
+
+    window.addEventListener(AUTH_CHANGED_EVENT, handleAuthChanged);
+
     return () => {
       cancelled = true;
+      window.removeEventListener(AUTH_CHANGED_EVENT, handleAuthChanged);
     };
   }, []);
 

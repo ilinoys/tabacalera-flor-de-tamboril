@@ -1,8 +1,25 @@
 "use client";
 
-import { Bell, CalendarDays, UserCircle2 } from "lucide-react";
+import {
+  Bell,
+  CalendarDays,
+  LayoutDashboard,
+  LogOut,
+  Settings,
+  User,
+  UserCircle2,
+} from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
+
+import { useAuth } from "@/hooks/useAuth";
 
 export default function AdminHeader() {
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const userMenuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+  const { user, logout } = useAuth();
   const today = new Date().toLocaleDateString("es-DO", {
     weekday: "long",
     day: "numeric",
@@ -10,12 +27,37 @@ export default function AdminHeader() {
     year: "numeric",
   });
 
+  const userFullName = user
+    ? `${user.firstName} ${user.lastName}`.trim()
+    : "Administrador";
+
+  useEffect(() => {
+    function handlePointerDown(event: MouseEvent) {
+      if (
+        userMenuRef.current &&
+        !userMenuRef.current.contains(event.target as Node)
+      ) {
+        setUserMenuOpen(false);
+      }
+    }
+
+    document.addEventListener("mousedown", handlePointerDown);
+
+    return () => {
+      document.removeEventListener("mousedown", handlePointerDown);
+    };
+  }, []);
+
+  async function handleLogout() {
+    setUserMenuOpen(false);
+    await logout();
+    router.replace("/");
+  }
+
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-800 bg-neutral-900/95 backdrop-blur">
 
       <div className="flex items-center justify-between px-10 py-5">
-
-        {/* Información */}
 
         <div>
 
@@ -29,11 +71,7 @@ export default function AdminHeader() {
 
         </div>
 
-        {/* Lado derecho */}
-
         <div className="flex items-center gap-4">
-
-          {/* Fecha */}
 
           <div className="hidden items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-300 lg:flex">
 
@@ -48,9 +86,11 @@ export default function AdminHeader() {
 
           </div>
 
-          {/* Notificaciones */}
-
-          <button className="relative rounded-xl border border-neutral-800 bg-neutral-950 p-3 transition hover:border-yellow-600 hover:bg-neutral-800">
+          <button
+            type="button"
+            className="relative rounded-xl border border-neutral-800 bg-neutral-950 p-3 transition hover:border-yellow-600 hover:bg-neutral-800"
+            aria-label="Notificaciones"
+          >
 
             <Bell
               size={20}
@@ -63,24 +103,83 @@ export default function AdminHeader() {
 
           </button>
 
-          {/* Usuario */}
+          <div
+            className="relative"
+            ref={userMenuRef}
+          >
+            <button
+              type="button"
+              onClick={() => setUserMenuOpen((open) => !open)}
+              className="flex items-center gap-3 rounded-xl bg-yellow-500 px-4 py-2 font-semibold text-black shadow-lg transition hover:brightness-110"
+              aria-haspopup="menu"
+              aria-expanded={userMenuOpen}
+            >
 
-          <div className="flex items-center gap-3 rounded-xl bg-yellow-500 px-4 py-2 font-semibold text-black shadow-lg">
+              <UserCircle2 size={24} />
 
-            <UserCircle2 size={24} />
+              <div className="hidden text-left md:block">
 
-            <div className="hidden md:block">
+                <p className="text-sm font-bold">
+                  {userFullName}
+                </p>
 
-              <p className="text-sm font-bold">
-                Administrador
-              </p>
+                <p className="text-xs opacity-80">
+                  Flor De Tamboril
+                </p>
 
-              <p className="text-xs opacity-80">
-                Flor De Tamboril
-              </p>
+              </div>
 
-            </div>
+            </button>
 
+            {userMenuOpen && (
+              <div className="absolute right-0 mt-3 w-64 rounded-xl border border-neutral-800 bg-neutral-950 p-2 text-sm text-white shadow-2xl">
+                <div className="border-b border-neutral-800 px-3 py-3">
+                  <p className="font-semibold">
+                    {userFullName}
+                  </p>
+
+                  <p className="mt-1 text-xs text-neutral-400">
+                    {user?.email ?? "admin@flordetamboril.com"}
+                  </p>
+                </div>
+
+                <Link
+                  href="/admin"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="mt-2 flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-neutral-800 hover:text-yellow-500"
+                >
+                  <LayoutDashboard size={17} />
+                  Dashboard
+                </Link>
+
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-neutral-400"
+                  title="Proximamente"
+                >
+                  <User size={17} />
+                  Mi perfil
+                </button>
+
+                <button
+                  type="button"
+                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-neutral-400"
+                  title="Proximamente"
+                >
+                  <Settings size={17} />
+                    Configuración
+                </button>
+
+                <button
+                  type="button"
+                  onClick={handleLogout}
+                  className="mt-2 flex w-full items-center gap-3 rounded-lg border-t border-neutral-800 px-3 py-2 text-left text-red-300 transition hover:bg-red-950/40 hover:text-red-200"
+                >
+                  <LogOut size={17} />
+                  Cerrar sesión
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
