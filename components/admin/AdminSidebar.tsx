@@ -1,17 +1,18 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-
 import {
+  Boxes,
+  FileText,
   LayoutDashboard,
   Package,
-  ShoppingCart,
-  Users,
-  FileText,
-  Boxes,
   Settings,
+  ShoppingCart,
+  UserCog,
+  UserCircle,
+  Users,
 } from "lucide-react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 const menu = [
   {
@@ -35,9 +36,19 @@ const menu = [
     icon: Users,
   },
   {
+    title: "Usuarios",
+    href: "/admin/usuarios",
+    icon: UserCog,
+  },
+  {
     title: "Cotizaciones",
     href: "/admin/cotizaciones",
     icon: FileText,
+  },
+  {
+    title: "Mi Perfil",
+    href: "/admin/perfil",
+    icon: UserCircle,
   },
   {
     title: "Inventario",
@@ -51,7 +62,7 @@ const menu = [
     ],
   },
   {
-    title: "Configuración",
+    title: "Configuracion",
     href: "/admin/configuracion",
     icon: Settings,
   },
@@ -62,9 +73,7 @@ export default function AdminSidebar() {
 
   return (
     <aside className="min-h-screen w-72 border-r border-neutral-800 bg-neutral-950">
-
       <div className="p-8">
-
         <h1 className="text-2xl font-bold text-yellow-500">
           Flor De Tamboril
         </h1>
@@ -72,11 +81,9 @@ export default function AdminSidebar() {
         <p className="text-neutral-500">
           Panel Administrativo
         </p>
-
       </div>
 
       <nav className="space-y-2 px-4">
-
         {menu.map((item) => {
           const Icon = item.icon;
 
@@ -124,9 +131,7 @@ export default function AdminSidebar() {
             </div>
           );
         })}
-
       </nav>
-
     </aside>
   );
 }

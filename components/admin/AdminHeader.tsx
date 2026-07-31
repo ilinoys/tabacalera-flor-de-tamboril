@@ -9,6 +9,7 @@ import {
   User,
   UserCircle2,
 } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
@@ -30,6 +31,12 @@ export default function AdminHeader() {
   const userFullName = user
     ? `${user.firstName} ${user.lastName}`.trim()
     : "Administrador";
+  const userInitials = userFullName
+    .split(" ")
+    .map((part) => part.charAt(0))
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -56,11 +63,8 @@ export default function AdminHeader() {
 
   return (
     <header className="sticky top-0 z-40 border-b border-neutral-800 bg-neutral-900/95 backdrop-blur">
-
       <div className="flex items-center justify-between px-10 py-5">
-
         <div>
-
           <h1 className="text-3xl font-bold text-white">
             Dashboard
           </h1>
@@ -68,13 +72,10 @@ export default function AdminHeader() {
           <p className="mt-1 text-sm text-neutral-400">
             Bienvenido al panel administrativo de Flor De Tamboril.
           </p>
-
         </div>
 
         <div className="flex items-center gap-4">
-
           <div className="hidden items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-300 lg:flex">
-
             <CalendarDays
               size={18}
               className="text-yellow-500"
@@ -83,7 +84,6 @@ export default function AdminHeader() {
             <span className="capitalize">
               {today}
             </span>
-
           </div>
 
           <button
@@ -91,7 +91,6 @@ export default function AdminHeader() {
             className="relative rounded-xl border border-neutral-800 bg-neutral-950 p-3 transition hover:border-yellow-600 hover:bg-neutral-800"
             aria-label="Notificaciones"
           >
-
             <Bell
               size={20}
               className="text-yellow-500"
@@ -100,7 +99,6 @@ export default function AdminHeader() {
             <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-xs font-bold text-white">
               0
             </span>
-
           </button>
 
           <div
@@ -114,11 +112,22 @@ export default function AdminHeader() {
               aria-haspopup="menu"
               aria-expanded={userMenuOpen}
             >
-
-              <UserCircle2 size={24} />
+              <span className="relative flex h-6 w-6 items-center justify-center overflow-hidden rounded-full bg-black/15 text-xs font-bold">
+                {user?.profileImage ? (
+                  <Image
+                    src={user.profileImage}
+                    alt={userFullName}
+                    fill
+                    className="object-cover"
+                    sizes="24px"
+                    unoptimized
+                  />
+                ) : (
+                  userInitials || <UserCircle2 size={24} />
+                )}
+              </span>
 
               <div className="hidden text-left md:block">
-
                 <p className="text-sm font-bold">
                   {userFullName}
                 </p>
@@ -126,9 +135,7 @@ export default function AdminHeader() {
                 <p className="text-xs opacity-80">
                   Flor De Tamboril
                 </p>
-
               </div>
-
             </button>
 
             {userMenuOpen && (
@@ -152,14 +159,14 @@ export default function AdminHeader() {
                   Dashboard
                 </Link>
 
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-neutral-400"
-                  title="Proximamente"
+                <Link
+                  href="/admin/perfil"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-neutral-800 hover:text-yellow-500"
                 >
                   <User size={17} />
                   Mi perfil
-                </button>
+                </Link>
 
                 <button
                   type="button"
@@ -167,7 +174,7 @@ export default function AdminHeader() {
                   title="Proximamente"
                 >
                   <Settings size={17} />
-                    Configuración
+                  Configuracion
                 </button>
 
                 <button
@@ -176,16 +183,13 @@ export default function AdminHeader() {
                   className="mt-2 flex w-full items-center gap-3 rounded-lg border-t border-neutral-800 px-3 py-2 text-left text-red-300 transition hover:bg-red-950/40 hover:text-red-200"
                 >
                   <LogOut size={17} />
-                  Cerrar sesión
+                  Cerrar sesion
                 </button>
               </div>
             )}
           </div>
-
         </div>
-
       </div>
-
     </header>
   );
 }

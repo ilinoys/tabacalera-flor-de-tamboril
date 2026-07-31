@@ -34,6 +34,12 @@ export default function Header() {
   const userFullName = user
     ? `${user.firstName} ${user.lastName}`.trim()
     : "";
+  const userInitials = userFullName
+    .split(" ")
+    .map((part) => part.charAt(0))
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   useEffect(() => {
     const onScroll = () => {
@@ -100,7 +106,7 @@ export default function Header() {
           <Link href="/">Inicio</Link>
           <Link href="/tienda">Tienda</Link>
           <a href="#historia">Historia</a>
-          <a href="#galeria">Galería</a>
+          <a href="#galeria">Galeria</a>
           <a href="#contacto">Contacto</a>
         </nav>
 
@@ -136,7 +142,20 @@ export default function Header() {
                 aria-haspopup="menu"
                 aria-expanded={userMenuOpen}
               >
-                <User size={22} />
+                <span className="relative flex h-7 w-7 items-center justify-center overflow-hidden rounded-full text-xs font-bold">
+                  {user?.profileImage ? (
+                    <Image
+                      src={user.profileImage}
+                      alt={userFullName}
+                      fill
+                      className="object-cover"
+                      sizes="28px"
+                      unoptimized
+                    />
+                  ) : (
+                    userInitials || <User size={22} />
+                  )}
+                </span>
               </button>
 
               {userMenuOpen && (
@@ -157,14 +176,14 @@ export default function Header() {
                     Dashboard
                   </Link>
 
-                  <button
-                    type="button"
-                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-neutral-400"
-                    title="Proximamente"
+                  <Link
+                    href="/admin/perfil"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-neutral-800 hover:text-yellow-500"
                   >
                     <User size={17} />
                     Mi perfil
-                  </button>
+                  </Link>
 
                   <button
                     type="button"
@@ -172,7 +191,7 @@ export default function Header() {
                     title="Proximamente"
                   >
                     <Settings size={17} />
-                    Configuración
+                    Configuracion
                   </button>
 
                   <button
@@ -181,7 +200,7 @@ export default function Header() {
                     className="mt-2 flex w-full items-center gap-3 rounded-lg border-t border-white/10 px-3 py-2 text-left text-red-300 transition hover:bg-red-950/40 hover:text-red-200"
                   >
                     <LogOut size={17} />
-                    Cerrar sesión
+                    Cerrar sesion
                   </button>
                 </div>
               )}
@@ -190,7 +209,7 @@ export default function Header() {
             <Link
               href="/login"
               className="text-white transition-colors hover:text-yellow-500"
-              title="Iniciar sesión"
+              title="Iniciar sesion"
             >
               <User size={22} />
             </Link>
@@ -199,7 +218,7 @@ export default function Header() {
           <button
             type="button"
             className="text-white lg:hidden"
-            aria-label="Abrir menú"
+            aria-label="Abrir menu"
           >
             <Menu size={28} />
           </button>

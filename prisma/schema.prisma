@@ -137,6 +137,22 @@ model CompanySettings {
   exchangeRate    Float     @default(61.5)
 }
 
+model RawMaterial {
+  id           String            @id @default(cuid())
+  code         String            @unique
+  name         String
+  description  String?
+  category     String
+  unit         String
+  currentStock Float
+  minimumStock Float
+  cost         Float
+  supplier     String?
+  status       RawMaterialStatus @default(ACTIVE)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+}
+
 enum CustomerType {
   PARTICULAR
   DISTRIBUIDOR
@@ -189,6 +205,11 @@ enum UserStatus {
   LOCKED
 }
 
+enum RawMaterialStatus {
+  ACTIVE
+  INACTIVE
+}
+
 model User {
   id                  String     @id @default(cuid())
   username            String     @unique
@@ -196,6 +217,7 @@ model User {
   passwordHash        String
   firstName           String
   lastName            String
+  profileImage        String?    @db.Text
   role                UserRole   @default(USER)
   status              UserStatus @default(ACTIVE)
   lastLogin           DateTime?

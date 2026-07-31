@@ -5,7 +5,7 @@ export default function LoginLogo() {
     <div className="flex flex-col items-center text-center">
       <div className="mb-6">
         <Image
-          src="/logo.png"
+          src="/images/logo/logo.png"
           alt="Flor de Tamboril"
           width={130}
           height={130}

@@ -13,6 +13,7 @@ type UserRecord = {
   passwordHash: string;
   firstName: string;
   lastName: string;
+  profileImage: string | null;
   role: SessionUserRole;
   status: UserStatus;
   lastLogin: Date | null;
@@ -26,9 +27,11 @@ export type AuthUser = {
   email: string;
   firstName: string;
   lastName: string;
+  profileImage: string | null;
   role: SessionUserRole;
   status: UserStatus;
   lastLogin: string | null;
+  createdAt?: string;
 };
 
 type LoginResult =
@@ -52,6 +55,7 @@ function toAuthUser(user: UserRecord): AuthUser {
     email: user.email,
     firstName: user.firstName,
     lastName: user.lastName,
+    profileImage: user.profileImage,
     role: user.role,
     status: user.status,
     lastLogin: user.lastLogin?.toISOString() ?? null,
@@ -67,6 +71,7 @@ async function findUserByIdentifier(identifier: string) {
       "passwordHash",
       "firstName",
       "lastName",
+      "profileImage",
       role,
       status,
       "lastLogin",
@@ -176,6 +181,7 @@ export async function getUserById(userId: string) {
       "passwordHash",
       "firstName",
       "lastName",
+      "profileImage",
       role,
       status,
       "lastLogin",

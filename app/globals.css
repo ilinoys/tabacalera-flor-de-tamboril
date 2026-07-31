@@ -21,3 +21,18 @@ body {
 input::placeholder {
   color: #777;
 }
+
+.input-admin {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid rgb(64 64 64);
+  background: #000;
+  padding: 0.75rem 1rem;
+  color: #fff;
+  outline: none;
+  transition: border-color 150ms ease;
+}
+
+.input-admin:focus {
+  border-color: rgb(234 179 8);
+}

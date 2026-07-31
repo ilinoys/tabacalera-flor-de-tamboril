@@ -8,9 +8,11 @@ export type AuthUser = {
   email: string;
   firstName: string;
   lastName: string;
+  profileImage: string | null;
   role: "ADMIN" | "MANAGER" | "SALES" | "INVENTORY" | "USER";
   status: "ACTIVE" | "INACTIVE" | "LOCKED";
   lastLogin: string | null;
+  createdAt?: string;
 };
 
 type LoginInput = {
