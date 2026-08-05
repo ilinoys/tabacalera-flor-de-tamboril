@@ -34,7 +34,7 @@ export default function CartPage() {
       <main className="min-h-screen bg-black pt-32 pb-20 text-white">
         <div className="mx-auto max-w-7xl px-6">
 
-          <h1 className="mb-12 text-5xl font-bold text-yellow-500">
+          <h1 className="mb-12 text-4xl font-bold text-yellow-500 md:text-5xl">
             Carrito de Compras
           </h1>
 
@@ -66,14 +66,14 @@ export default function CartPage() {
                   {items.map((item) => (
                     <div
                       key={item.id}
-                      className="flex gap-6 rounded-2xl border border-neutral-800 bg-neutral-900 p-6"
+                      className="flex flex-col gap-5 rounded-2xl border border-neutral-800 bg-neutral-900 p-5 sm:flex-row sm:gap-6 sm:p-6"
                     >
                       <Image
                         src={item.image}
                         alt={item.name}
                         width={140}
                         height={140}
-                        className="rounded-xl object-cover"
+                        className="h-36 w-full rounded-xl object-cover sm:h-[140px] sm:w-[140px]"
                       />
 
                       <div className="flex flex-1 flex-col justify-between">
@@ -95,8 +95,10 @@ export default function CartPage() {
                         <div className="mt-5 flex items-center gap-3">
 
                           <button
+                            type="button"
                             onClick={() => decreaseQuantity(item.id)}
-                            className="rounded-lg bg-neutral-800 p-2 hover:bg-neutral-700"
+                            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-neutral-800 p-2 hover:bg-neutral-700"
+                            aria-label="Disminuir cantidad"
                           >
                             <Minus size={18} />
                           </button>
@@ -106,15 +108,19 @@ export default function CartPage() {
                           </span>
 
                           <button
+                            type="button"
                             onClick={() => increaseQuantity(item.id)}
-                            className="rounded-lg bg-neutral-800 p-2 hover:bg-neutral-700"
+                            className="flex min-h-11 min-w-11 items-center justify-center rounded-lg bg-neutral-800 p-2 hover:bg-neutral-700"
+                            aria-label="Aumentar cantidad"
                           >
                             <Plus size={18} />
                           </button>
 
                           <button
+                            type="button"
                             onClick={() => removeFromCart(item.id)}
-                            className="ml-6 text-red-500 hover:text-red-400"
+                            className="ml-auto flex min-h-11 min-w-11 items-center justify-center text-red-500 hover:text-red-400 sm:ml-6"
+                            aria-label="Eliminar producto"
                           >
                             <Trash2 />
                           </button>

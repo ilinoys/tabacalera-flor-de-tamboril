@@ -10,6 +10,11 @@ import {
   createUser,
   listUsers,
 } from "@/services/adminUserService";
+import type {
+  ManagedUserStatus,
+  UserListParams,
+} from "@/services/adminUserService";
+import type { SessionUserRole } from "@/lib/auth/session";
 
 export const runtime = "nodejs";
 
@@ -23,6 +28,20 @@ const sortFields = [
   "status",
   "createdAt",
 ] as const;
+
+function isRole(value: string | null): value is SessionUserRole {
+  return Boolean(value && (roles as readonly string[]).includes(value));
+}
+
+function isStatus(value: string | null): value is ManagedUserStatus {
+  return Boolean(value && (statuses as readonly string[]).includes(value));
+}
+
+function isSortField(
+  value: string | null
+): value is NonNullable<UserListParams["sortBy"]> {
+  return Boolean(value && (sortFields as readonly string[]).includes(value));
+}
 
 const createUserSchema = z.object({
   firstName: z.string().trim().min(2).max(60),
@@ -75,18 +94,9 @@ export async function GET(request: NextRequest) {
 
   const result = await listUsers({
     search: searchParams.get("search") ?? "",
-    role:
-      role && (roles as readonly string[]).includes(role)
-        ? role
-        : "ALL",
-    status:
-      status && (statuses as readonly string[]).includes(status)
-        ? status
-        : "ALL",
-    sortBy:
-      sortBy && (sortFields as readonly string[]).includes(sortBy)
-        ? sortBy
-        : "createdAt",
+    role: isRole(role) ? role : "ALL",
+    status: isStatus(status) ? status : "ALL",
+    sortBy: isSortField(sortBy) ? sortBy : "createdAt",
     sortDirection: sortDirection === "asc" ? "asc" : "desc",
     page: Number.isFinite(page) ? page : 1,
     pageSize: Number.isFinite(pageSize) ? pageSize : 10,

@@ -99,7 +99,7 @@ export default function LoginForm() {
             aria-describedby={
               errors.identifier ? "identifier-error" : undefined
             }
-            className="w-full bg-transparent px-3 py-3 text-white placeholder:text-gray-500 outline-none disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full bg-transparent px-3 py-3 text-base text-white placeholder:text-gray-500 outline-none disabled:cursor-not-allowed disabled:opacity-70"
           />
         </div>
 
@@ -139,7 +139,7 @@ export default function LoginForm() {
             disabled={isLoading}
             aria-invalid={Boolean(errors.password)}
             aria-describedby={errors.password ? "password-error" : undefined}
-            className="w-full bg-transparent px-3 py-3 text-white placeholder:text-gray-500 outline-none disabled:cursor-not-allowed disabled:opacity-70"
+            className="w-full bg-transparent px-3 py-3 text-base text-white placeholder:text-gray-500 outline-none disabled:cursor-not-allowed disabled:opacity-70"
           />
 
           <button
@@ -149,7 +149,7 @@ export default function LoginForm() {
             aria-label={
               showPassword ? "Ocultar contrasena" : "Mostrar contrasena"
             }
-            className="text-gray-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
+            className="flex min-h-11 min-w-11 items-center justify-center text-gray-500 transition hover:text-white disabled:cursor-not-allowed disabled:opacity-70"
           >
             {showPassword ? (
               <EyeOff className="h-5 w-5" aria-hidden="true" />
@@ -180,7 +180,7 @@ export default function LoginForm() {
 
         <button
           type="button"
-          className="font-medium text-[#D4AF37] transition hover:underline"
+          className="min-h-11 font-medium text-[#D4AF37] transition hover:underline"
         >
           Olvidaste tu contrasena?
         </button>
@@ -189,7 +189,7 @@ export default function LoginForm() {
       <button
         type="submit"
         disabled={isLoading}
-        className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] py-3 font-semibold text-black transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
+        className="flex min-h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#D4AF37] py-3 font-semibold text-black transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-70"
       >
         {isLoading && <Loader2 className="h-5 w-5 animate-spin" />}
         {isLoading ? "Iniciando sesion..." : "Iniciar sesion"}

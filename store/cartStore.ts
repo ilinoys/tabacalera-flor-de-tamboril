@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { persist } from "zustand/middleware";
 import type { Product } from "@/types/product";
 
 export interface CartItem extends Product {
@@ -18,8 +19,10 @@ interface CartStore {
   totalPrice: () => number;
 }
 
-export const useCartStore = create<CartStore>((set, get) => ({
-  items: [],
+export const useCartStore = create<CartStore>()(
+  persist(
+    (set, get) => ({
+      items: [],
 
   addToCart: (product) =>
     set((state) => {
@@ -75,4 +78,12 @@ export const useCartStore = create<CartStore>((set, get) => ({
       (acc, item) => acc + item.price * item.quantity,
       0
     ),
-}));
+    }),
+    {
+      name: "flor-cart",
+      partialize: (state) => ({
+        items: state.items,
+      }),
+    }
+  )
+);

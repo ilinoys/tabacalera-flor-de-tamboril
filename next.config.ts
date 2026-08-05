@@ -6,6 +6,11 @@ const supabaseStorageHost = supabaseUrl
   : undefined;
 
 const nextConfig: NextConfig = {
+  allowedDevOrigins: [
+    "192.168.100.186",
+    "localhost",
+  ],
+
   images: {
     remotePatterns: supabaseStorageHost
       ? [

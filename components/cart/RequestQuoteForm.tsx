@@ -102,7 +102,7 @@ export default function RequestQuoteForm() {
           placeholder="Nombre completo"
           value={form.customerName}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white"
           required
         />
 
@@ -111,7 +111,7 @@ export default function RequestQuoteForm() {
           placeholder="Empresa (opcional)"
           value={form.company}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white"
         />
 
         <input
@@ -120,7 +120,7 @@ export default function RequestQuoteForm() {
           placeholder="Correo electrónico"
           value={form.email}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white"
           required
         />
 
@@ -129,7 +129,7 @@ export default function RequestQuoteForm() {
           placeholder="WhatsApp"
           value={form.phone}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white"
           required
         />
 
@@ -138,7 +138,7 @@ export default function RequestQuoteForm() {
           placeholder="País"
           value={form.country}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white"
           required
         />
 
@@ -147,7 +147,7 @@ export default function RequestQuoteForm() {
           placeholder="Ciudad"
           value={form.city}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white"
           required
         />
 
@@ -155,7 +155,7 @@ export default function RequestQuoteForm() {
           name="customerType"
           value={form.customerType}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white md:col-span-2"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white md:col-span-2"
         >
           <option value="PARTICULAR">Cliente Particular</option>
           <option value="DISTRIBUIDOR">Distribuidor</option>
@@ -168,13 +168,13 @@ export default function RequestQuoteForm() {
           placeholder="Comentarios"
           value={form.notes}
           onChange={handleChange}
-          className="rounded-xl border border-neutral-700 bg-black p-4 text-white md:col-span-2"
+          className="rounded-xl border border-neutral-700 bg-black p-4 text-base text-white md:col-span-2"
         />
 
         <button
           type="submit"
           disabled={loading}
-          className="rounded-xl bg-yellow-600 p-4 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 md:col-span-2"
+          className="min-h-12 rounded-xl bg-yellow-600 p-4 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 md:col-span-2"
         >
           {loading ? "Enviando..." : "Enviar Solicitud"}
         </button>
