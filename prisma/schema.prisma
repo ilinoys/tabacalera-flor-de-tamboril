@@ -137,20 +137,21 @@ model CompanySettings {
   exchangeRate    Float     @default(61.5)
 }
 
-model RawMaterial {
-  id           String            @id @default(cuid())
-  code         String            @unique
-  name         String
-  description  String?
-  category     String
-  unit         String
-  currentStock Float
-  minimumStock Float
-  cost         Float
-  supplier     String?
-  status       RawMaterialStatus @default(ACTIVE)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+model User {
+  id                  String     @id @default(cuid())
+  username            String     @unique
+  email               String     @unique
+  passwordHash        String
+  firstName           String
+  lastName            String
+  role                UserRole   @default(USER)
+  status              UserStatus @default(ACTIVE)
+  lastLogin           DateTime?
+  failedLoginAttempts Int        @default(0)
+  lockedUntil         DateTime?
+  createdAt           DateTime   @default(now())
+  updatedAt           DateTime   @updatedAt
+  profileImage        String?
 }
 
 enum CustomerType {
@@ -203,26 +204,4 @@ enum UserStatus {
   ACTIVE
   INACTIVE
   LOCKED
-}
-
-enum RawMaterialStatus {
-  ACTIVE
-  INACTIVE
-}
-
-model User {
-  id                  String     @id @default(cuid())
-  username            String     @unique
-  email               String     @unique
-  passwordHash        String
-  firstName           String
-  lastName            String
-  profileImage        String?    @db.Text
-  role                UserRole   @default(USER)
-  status              UserStatus @default(ACTIVE)
-  lastLogin           DateTime?
-  failedLoginAttempts Int        @default(0)
-  lockedUntil         DateTime?
-  createdAt           DateTime   @default(now())
-  updatedAt           DateTime   @updatedAt
 }
