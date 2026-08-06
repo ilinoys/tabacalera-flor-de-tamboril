@@ -3,6 +3,7 @@
 import {
   Boxes,
   FileText,
+  Globe,
   LayoutDashboard,
   Package,
   Settings,
@@ -62,7 +63,7 @@ const menu = [
     ],
   },
   {
-    title: "Configuracion",
+    title: "Configuración",
     href: "/admin/configuracion",
     icon: Settings,
   },
@@ -72,7 +73,7 @@ export default function AdminSidebar() {
   const pathname = usePathname();
 
   return (
-    <aside className="min-h-screen w-72 border-r border-neutral-800 bg-neutral-950">
+    <aside className="min-h-screen w-72 border-r border-neutral-800 bg-neutral-950 flex flex-col">
       <div className="p-8">
         <h1 className="text-2xl font-bold text-yellow-500">
           Flor De Tamboril
@@ -83,7 +84,7 @@ export default function AdminSidebar() {
         </p>
       </div>
 
-      <nav className="space-y-2 px-4">
+      <nav className="flex-1 space-y-2 px-4">
         {menu.map((item) => {
           const Icon = item.icon;
 
@@ -103,7 +104,6 @@ export default function AdminSidebar() {
                 }`}
               >
                 <Icon size={22} />
-
                 <span>{item.title}</span>
               </Link>
 
@@ -132,6 +132,16 @@ export default function AdminSidebar() {
           );
         })}
       </nav>
+
+      <div className="border-t border-neutral-800 p-4">
+        <Link
+          href="/"
+          className="flex items-center gap-4 rounded-xl px-4 py-3 text-neutral-300 transition-all hover:bg-neutral-800 hover:text-white"
+        >
+          <Globe size={22} />
+          <span>Volver al Sitio Web</span>
+        </Link>
+      </div>
     </aside>
   );
 }
