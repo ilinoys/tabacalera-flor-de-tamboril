@@ -2,9 +2,6 @@
 
 import { useEffect, useState } from "react";
 
-import AdminHeader from "@/components/admin/AdminHeader";
-import AdminSidebar from "@/components/admin/AdminSidebar";
-
 import StatsGrid from "@/components/admin/dashboard/StatsGrid";
 import StatusSummary from "@/components/admin/dashboard/StatusSummary";
 import RecentOrders from "@/components/admin/dashboard/RecentOrders";
@@ -68,39 +65,31 @@ export default function AdminPage() {
   }, []);
 
   return (
-    <main className="flex min-h-screen bg-black">
-      <AdminSidebar />
+    <div className="space-y-10 p-10">
+      <div>
+        <h1 className="text-4xl font-bold text-white">
+          Dashboard
+        </h1>
 
-      <div className="flex-1">
-        <AdminHeader />
-
-        <div className="space-y-10 p-10">
-          <div>
-            <h1 className="text-4xl font-bold text-white">
-              Dashboard
-            </h1>
-
-            <p className="mt-2 text-neutral-400">
-              Resumen general del sistema.
-            </p>
-          </div>
-
-          <StatsGrid
-            loading={loading}
-            stats={stats}
-          />
-
-          <StatusSummary
-            loading={loading}
-            data={stats?.statusSummary ?? []}
-          />
-
-          <RecentOrders
-            loading={loading}
-            orders={stats?.latestOrders ?? []}
-          />
-        </div>
+        <p className="mt-2 text-neutral-400">
+          Resumen general del sistema.
+        </p>
       </div>
-    </main>
+
+      <StatsGrid
+        loading={loading}
+        stats={stats}
+      />
+
+      <StatusSummary
+        loading={loading}
+        data={stats?.statusSummary ?? []}
+      />
+
+      <RecentOrders
+        loading={loading}
+        orders={stats?.latestOrders ?? []}
+      />
+    </div>
   );
 }
