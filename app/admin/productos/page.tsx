@@ -2,8 +2,6 @@
 
 import { useState } from "react";
 
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminHeader from "@/components/admin/AdminHeader";
 import ProductTable from "@/components/admin/products/ProductTable";
 import ProductToolbar from "@/components/admin/products/ProductToolbar";
 import ProductModal from "@/components/admin/modals/ProductModal";
@@ -39,32 +37,24 @@ export default function ProductosPage() {
   }
 
   return (
-    <main className="flex min-h-screen bg-black">
-      <AdminSidebar />
+    <div className="p-10">
+      <h1 className="mb-8 text-4xl font-bold text-white">
+        Productos
+      </h1>
 
-      <div className="flex-1">
-        <AdminHeader />
+      <ProductToolbar
+        onNewProduct={handleNewProduct}
+      />
 
-        <div className="p-10">
-          <h1 className="mb-8 text-4xl font-bold text-white">
-            Productos
-          </h1>
+      <ProductTable
+        onEdit={handleEditProduct}
+      />
 
-          <ProductToolbar
-            onNewProduct={handleNewProduct}
-          />
-
-          <ProductTable
-            onEdit={handleEditProduct}
-          />
-
-          <ProductModal
-            open={openModal}
-            product={selectedProduct}
-            onClose={handleCloseModal}
-          />
-        </div>
-      </div>
-    </main>
+      <ProductModal
+        open={openModal}
+        product={selectedProduct}
+        onClose={handleCloseModal}
+      />
+    </div>
   );
 }

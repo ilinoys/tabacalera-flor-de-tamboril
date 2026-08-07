@@ -2,9 +2,6 @@
 
 import { useState } from "react";
 
-import AdminSidebar from "@/components/admin/AdminSidebar";
-import AdminHeader from "@/components/admin/AdminHeader";
-
 import CustomerTable, {
   Customer,
 } from "@/components/admin/customers/CustomerTable";
@@ -33,58 +30,40 @@ export default function ClientesPage() {
   }
 
   return (
-    <main className="flex min-h-screen bg-black">
+    <div className="p-10">
+      <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+        <div>
+          <h1 className="text-4xl font-bold text-white">
+            Clientes
+          </h1>
 
-      <AdminSidebar />
-
-      <div className="flex-1">
-
-        <AdminHeader />
-
-        <div className="p-10">
-
-          <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
-
-            <div>
-
-              <h1 className="text-4xl font-bold text-white">
-                Clientes
-              </h1>
-
-              <p className="mt-3 text-neutral-400">
-                Administra todos los clientes registrados en Flor de Tamboril.
-              </p>
-
-            </div>
-
-            <button
-              onClick={newCustomer}
-              className="rounded-xl bg-yellow-600 px-8 py-4 font-bold text-white hover:bg-yellow-500"
-            >
-              + Nuevo Cliente
-            </button>
-
-          </div>
-
-          <CustomerTable
-            reloadKey={reloadKey}
-            onEdit={editCustomer}
-          />
-
-          <CustomerModal
-            open={openModal}
-            customer={selectedCustomer}
-            onClose={() => {
-              setOpenModal(false);
-              setSelectedCustomer(null);
-            }}
-            onSaved={reloadCustomers}
-          />
-
+          <p className="mt-3 text-neutral-400">
+            Administra todos los clientes registrados en Flor de Tamboril.
+          </p>
         </div>
 
+        <button
+          onClick={newCustomer}
+          className="rounded-xl bg-yellow-600 px-8 py-4 font-bold text-white hover:bg-yellow-500"
+        >
+          + Nuevo Cliente
+        </button>
       </div>
 
-    </main>
+      <CustomerTable
+        reloadKey={reloadKey}
+        onEdit={editCustomer}
+      />
+
+      <CustomerModal
+        open={openModal}
+        customer={selectedCustomer}
+        onClose={() => {
+          setOpenModal(false);
+          setSelectedCustomer(null);
+        }}
+        onSaved={reloadCustomers}
+      />
+    </div>
   );
 }
