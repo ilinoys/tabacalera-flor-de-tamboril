@@ -82,10 +82,19 @@ const menu: MenuItem[] = [
   },
 ];
 
-export default function AdminSidebar() {
+type AdminSidebarProps = {
+  isOpen: boolean;
+  setIsOpen: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+};
+
+export default function AdminSidebar({
+  isOpen,
+  setIsOpen,
+}: AdminSidebarProps) {
   const pathname = usePathname();
 
-  const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
     setIsOpen(false);
@@ -119,13 +128,6 @@ export default function AdminSidebar() {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsOpen(true)}
-        className="fixed left-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-950 text-white shadow-xl transition hover:border-yellow-600 lg:hidden"
-      >
-        <Menu size={22} />
-      </button>
 
       {isOpen && (
         <div
@@ -162,7 +164,7 @@ export default function AdminSidebar() {
             onClick={() => setIsOpen(false)}
             className="rounded-lg p-2 text-neutral-400 transition hover:bg-neutral-800 hover:text-white lg:hidden"
           >
-            <X size={22} />
+            <Menu size={22} />
           </button>
         </div>
 

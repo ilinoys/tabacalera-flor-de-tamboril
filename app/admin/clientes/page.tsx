@@ -30,21 +30,21 @@ export default function ClientesPage() {
   }
 
   return (
-    <div className="p-10">
-      <div className="mb-10 flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+    <div className="p-4 sm:p-10">
+      <div className="mb-6 flex flex-col gap-4 sm:mb-10 lg:flex-row lg:items-center lg:justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-white sm:text-4xl">
             Clientes
           </h1>
 
-          <p className="mt-3 text-neutral-400">
+          <p className="mt-3 text-sm text-neutral-400 sm:text-base">
             Administra todos los clientes registrados en Flor de Tamboril.
           </p>
         </div>
 
         <button
           onClick={newCustomer}
-          className="rounded-xl bg-yellow-600 px-8 py-4 font-bold text-white hover:bg-yellow-500"
+          className="w-full rounded-xl bg-yellow-600 px-8 py-3 font-bold text-white hover:bg-yellow-500 sm:w-auto sm:py-4"
         >
           + Nuevo Cliente
         </button>

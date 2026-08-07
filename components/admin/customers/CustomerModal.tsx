@@ -29,25 +29,19 @@ export default function CustomerModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
-
-      <div className="w-full max-w-2xl rounded-2xl bg-neutral-900 p-8">
-
-        <div className="mb-8 flex items-center justify-between">
-
-          <h2 className="text-3xl font-bold text-white">
-            {customer
-              ? "Editar Cliente"
-              : "Nuevo Cliente"}
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-8">
+      <div className="w-full max-w-2xl rounded-2xl bg-neutral-900 p-4 sm:p-8">
+        <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
+            {customer ? "Editar Cliente" : "Nuevo Cliente"}
           </h2>
 
           <button
             onClick={onClose}
-            className="rounded-lg bg-red-600 px-4 py-2 text-white"
+            className="rounded-lg bg-red-600 px-3 py-2 text-sm text-white sm:px-4"
           >
             Cerrar
           </button>
-
         </div>
 
         <CustomerForm
@@ -58,9 +52,7 @@ export default function CustomerModal({
             onClose();
           }}
         />
-
       </div>
-
     </div>
   );
 }

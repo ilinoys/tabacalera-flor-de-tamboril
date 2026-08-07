@@ -47,15 +47,15 @@ export default function ResetPasswordModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-4 backdrop-blur-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 px-3 backdrop-blur-sm sm:px-4">
       <div className="w-full max-w-xl rounded-2xl border border-neutral-800 bg-neutral-900 shadow-2xl">
-        <div className="flex items-center justify-between border-b border-neutral-800 px-8 py-6">
+        <div className="flex items-center justify-between border-b border-neutral-800 px-4 py-4 sm:px-8 sm:py-6">
           <div>
-            <h2 className="text-2xl font-bold text-white">
+            <h2 className="text-xl font-bold text-white sm:text-2xl">
               Restablecer contrasena
             </h2>
 
-            <p className="mt-1 text-sm text-neutral-400">
+            <p className="mt-1 text-xs text-neutral-400 sm:text-sm">
               Usuario: {user.username}
             </p>
           </div>
@@ -70,7 +70,7 @@ export default function ResetPasswordModal({
           </button>
         </div>
 
-        <form onSubmit={handleSubmit} className="space-y-6 p-8">
+        <form onSubmit={handleSubmit} className="space-y-6 p-4 sm:p-8">
           {(localError || error) && (
             <div className="rounded-xl border border-red-900/70 bg-red-950/40 px-4 py-3 text-sm text-red-200">
               {localError || error}
@@ -92,11 +92,11 @@ export default function ResetPasswordModal({
             />
           </label>
 
-          <div className="flex justify-end gap-3 border-t border-neutral-800 pt-6">
+          <div className="flex flex-col-reverse gap-3 border-t border-neutral-800 pt-6 sm:flex-row sm:justify-end">
             <button
               type="button"
               onClick={onClose}
-              className="rounded-xl border border-neutral-700 px-6 py-3 font-semibold text-neutral-300 transition hover:bg-neutral-800 hover:text-white"
+              className="w-full rounded-xl border border-neutral-700 px-6 py-3 font-semibold text-neutral-300 transition hover:bg-neutral-800 hover:text-white sm:w-auto"
             >
               Cancelar
             </button>
@@ -104,7 +104,7 @@ export default function ResetPasswordModal({
             <button
               type="submit"
               disabled={saving}
-              className="rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white transition hover:bg-yellow-500 disabled:opacity-50"
+              className="w-full rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white transition hover:bg-yellow-500 disabled:opacity-50 sm:w-auto"
             >
               {saving ? "Restableciendo..." : "Restablecer"}
             </button>

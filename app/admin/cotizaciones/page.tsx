@@ -46,21 +46,21 @@ export default function QuotationsPage() {
 
   return (
     <>
-      <div className="space-y-8 p-10">
-        <div className="flex items-center justify-between">
+      <div className="space-y-6 p-4 sm:space-y-8 sm:p-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-4xl font-bold text-white">
+            <h1 className="text-3xl font-bold text-white sm:text-4xl">
               Cotizaciones
             </h1>
 
-            <p className="mt-2 text-neutral-400">
+            <p className="mt-2 text-sm text-neutral-400 sm:text-base">
               Administración de cotizaciones.
             </p>
           </div>
 
           <button
             onClick={openQuotationModal}
-            className="rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500"
+            className="w-full rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 sm:w-auto"
           >
             + Nueva Cotización
           </button>

@@ -237,162 +237,192 @@ const QuotationTable = forwardRef<QuotationTableHandle, Props>(({
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
-
-      <div className="flex items-center justify-between border-b border-neutral-800 p-6">
-
-        <h2 className="text-2xl font-bold text-white">
+    <div className="rounded-2xl border border-neutral-800 bg-neutral-900">
+      <div className="flex items-center justify-between border-b border-neutral-800 p-4 sm:p-6">
+        <h2 className="text-xl font-bold text-white sm:text-2xl">
           Cotizaciones
         </h2>
 
-        <span className="rounded-full bg-yellow-600 px-4 py-2 font-bold text-white">
+        <span className="rounded-full bg-yellow-600 px-3 py-1 text-sm font-bold text-white sm:px-4 sm:py-2">
           {quotations.length}
         </span>
-
       </div>
 
-      <table className="w-full">
-
-        <thead className="bg-neutral-950">
-
-          <tr>
-
-            <th className="p-4 text-left text-yellow-500">
-              Numero
-            </th>
-
-            <th className="p-4 text-left text-yellow-500">
-              Cliente
-            </th>
-
-            <th className="p-4 text-left text-yellow-500">
-              Estado
-            </th>
-
-            <th className="p-4 text-left text-yellow-500">
-              Total
-            </th>
-
-            <th className="p-4 text-left text-yellow-500">
-              Fecha
-            </th>
-
-            <th className="p-4 text-center text-yellow-500">
-              Acciones
-            </th>
-
-          </tr>
-
-        </thead>
-
-        <tbody>
-
-          {quotations.map((quotation) => (
-
-            <tr
-              key={quotation.id}
-              className="border-t border-neutral-800 hover:bg-neutral-800/40"
-            >
-
-              <td className="p-4 font-bold text-white">
-                {quotation.quotationNumber}
-              </td>
-
-              <td className="p-4">
-
-                <div className="font-semibold text-white">
+      <div className="space-y-3 p-3 md:hidden">
+        {quotations.map((quotation) => (
+          <div
+            key={quotation.id}
+            className="rounded-xl border border-neutral-800 bg-black p-3"
+          >
+            <div className="flex items-start justify-between gap-3">
+              <div className="min-w-0">
+                <p className="font-bold text-white">{quotation.quotationNumber}</p>
+                <p className="mt-1 text-xs text-neutral-400">
                   {quotation.customer.customerName}
-                </div>
+                </p>
+              </div>
 
-                <div className="text-sm text-neutral-400">
-                  {quotation.customer.company || "-"}
-                </div>
-
-              </td>
-
-              <td className="p-4">
-                <div className="flex flex-col gap-2">
-                  <StatusBadge status={quotation.status} />
-
-                  <select
-                    value={quotation.status}
-                    onChange={(event) => {
-                      void updateQuotationStatus(
-                        quotation,
-                        event.target.value
-                      );
-                    }}
-                    className="rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm font-bold text-white outline-none focus:border-yellow-500"
-                  >
-                    {QUOTATION_STATUSES.map((status) => (
-                      <option
-                        key={status}
-                        value={status}
-                      >
-                        {status}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              </td>
-
-              <td className="p-4 text-white">
-                {formatExchangeCurrency(
-                  quotation.total,
-                  quotation.currency,
-                  exchangeRate
-                )}
-              </td>
-
-              <td className="p-4 text-neutral-300">
-                {new Date(
-                  quotation.createdAt
-                ).toLocaleDateString()}
-              </td>
-
-              <td className="p-4">
-
-                <QuotationActions
-                  onView={() => {
-                    window.location.href =
-                      `/admin/cotizaciones/${quotation.id}`;
+              <div className="flex flex-col items-end gap-2">
+                <StatusBadge status={quotation.status} />
+                <button
+                  type="button"
+                  onClick={() => {
+                    window.location.href = `/admin/cotizaciones/${quotation.id}`;
                   }}
-                  onEdit={() => {
-                    onEdit(quotation);
+                  className="rounded-lg bg-blue-600 px-3 py-2 text-xs font-medium text-white hover:bg-blue-500"
+                >
+                  Ver
+                </button>
+              </div>
+            </div>
+
+            <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+              <div>
+                <p className="text-neutral-500">Cliente</p>
+                <p className="text-white">{quotation.customer.company || "-"}</p>
+              </div>
+              <div>
+                <p className="text-neutral-500">Total</p>
+                <p className="text-white">
+                  {formatExchangeCurrency(
+                    quotation.total,
+                    quotation.currency,
+                    exchangeRate
+                  )}
+                </p>
+              </div>
+              <div className="col-span-2">
+                <p className="text-neutral-500">Estado</p>
+                <select
+                  value={quotation.status}
+                  onChange={(event) => {
+                    void updateQuotationStatus(quotation, event.target.value);
                   }}
-                  onDuplicate={() => {
-                    onDuplicate(quotation);
-                  }}
-                  onDelete={() => {
-                    void deleteQuotation(quotation);
-                  }}
-                />
+                  className="mt-1 w-full rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm font-bold text-white outline-none focus:border-yellow-500"
+                >
+                  {QUOTATION_STATUSES.map((status) => (
+                    <option key={status} value={status}>
+                      {status}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <div className="col-span-2">
+                <p className="text-neutral-500">Fecha</p>
+                <p className="text-neutral-300">
+                  {new Date(quotation.createdAt).toLocaleDateString()}
+                </p>
+              </div>
+            </div>
 
-              </td>
+            <div className="mt-4">
+              <QuotationActions
+                onView={() => {
+                  window.location.href = `/admin/cotizaciones/${quotation.id}`;
+                }}
+                onEdit={() => onEdit(quotation)}
+                onDuplicate={() => onDuplicate(quotation)}
+                onDelete={() => {
+                  void deleteQuotation(quotation);
+                }}
+              />
+            </div>
+          </div>
+        ))}
 
-            </tr>
+        {quotations.length === 0 && (
+          <div className="p-6 text-center text-sm text-neutral-400">
+            No hay cotizaciones registradas.
+          </div>
+        )}
+      </div>
 
-          ))}
-
-          {quotations.length === 0 && (
-
+      <div className="hidden overflow-x-auto md:block">
+        <table className="w-full">
+          <thead className="bg-neutral-950">
             <tr>
-
-              <td
-                colSpan={6}
-                className="p-8 text-center text-neutral-400"
-              >
-                No hay cotizaciones registradas.
-              </td>
-
+              <th className="p-4 text-left text-yellow-500">Numero</th>
+              <th className="p-4 text-left text-yellow-500">Cliente</th>
+              <th className="p-4 text-left text-yellow-500">Estado</th>
+              <th className="p-4 text-left text-yellow-500">Total</th>
+              <th className="p-4 text-left text-yellow-500">Fecha</th>
+              <th className="p-4 text-center text-yellow-500">Acciones</th>
             </tr>
+          </thead>
 
-          )}
+          <tbody>
+            {quotations.map((quotation) => (
+              <tr
+                key={quotation.id}
+                className="border-t border-neutral-800 hover:bg-neutral-800/40"
+              >
+                <td className="p-4 font-bold text-white">{quotation.quotationNumber}</td>
 
-        </tbody>
+                <td className="p-4">
+                  <div className="font-semibold text-white">
+                    {quotation.customer.customerName}
+                  </div>
+                  <div className="text-sm text-neutral-400">
+                    {quotation.customer.company || "-"}
+                  </div>
+                </td>
 
-      </table>
+                <td className="p-4">
+                  <div className="flex flex-col gap-2">
+                    <StatusBadge status={quotation.status} />
+                    <select
+                      value={quotation.status}
+                      onChange={(event) => {
+                        void updateQuotationStatus(quotation, event.target.value);
+                      }}
+                      className="rounded-lg border border-neutral-700 bg-neutral-950 px-3 py-2 text-sm font-bold text-white outline-none focus:border-yellow-500"
+                    >
+                      {QUOTATION_STATUSES.map((status) => (
+                        <option key={status} value={status}>
+                          {status}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </td>
 
+                <td className="p-4 text-white">
+                  {formatExchangeCurrency(
+                    quotation.total,
+                    quotation.currency,
+                    exchangeRate
+                  )}
+                </td>
+
+                <td className="p-4 text-neutral-300">
+                  {new Date(quotation.createdAt).toLocaleDateString()}
+                </td>
+
+                <td className="p-4">
+                  <QuotationActions
+                    onView={() => {
+                      window.location.href = `/admin/cotizaciones/${quotation.id}`;
+                    }}
+                    onEdit={() => onEdit(quotation)}
+                    onDuplicate={() => onDuplicate(quotation)}
+                    onDelete={() => {
+                      void deleteQuotation(quotation);
+                    }}
+                  />
+                </td>
+              </tr>
+            ))}
+
+            {quotations.length === 0 && (
+              <tr>
+                <td colSpan={6} className="p-8 text-center text-neutral-400">
+                  No hay cotizaciones registradas.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 });

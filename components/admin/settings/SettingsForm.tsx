@@ -185,18 +185,15 @@ export default function SettingsForm() {
   }
 
   return (
-    <div className="space-y-8">
-
+    <div className="space-y-4 sm:space-y-8">
       <div>
-
-        <h1 className="text-4xl font-bold text-white">
+        <h1 className="text-3xl font-bold text-white sm:text-4xl">
           Configuración
         </h1>
 
-        <p className="mt-2 text-neutral-400">
+        <p className="mt-2 text-sm text-neutral-400 sm:text-base">
           Administra la configuración general del ERP.
         </p>
-
       </div>
 
       <CompanyCard
@@ -242,17 +239,13 @@ export default function SettingsForm() {
       />
 
       <div className="flex justify-end">
-
         <button
           onClick={save}
           disabled={saving}
-          className="rounded-xl bg-yellow-600 px-8 py-4 font-bold text-white hover:bg-yellow-500 disabled:opacity-50"
+          className="w-full rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 sm:w-auto sm:px-8 sm:py-4"
         >
-          {saving
-            ? "Guardando..."
-            : "Guardar Configuración"}
+          {saving ? "Guardando..." : "Guardar Configuración"}
         </button>
-
       </div>
 
     </div>

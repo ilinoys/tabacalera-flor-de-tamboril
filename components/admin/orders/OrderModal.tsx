@@ -86,120 +86,96 @@ export default function OrderModal({
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 backdrop-blur-sm">
-      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
-
-        <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 backdrop-blur-sm sm:p-8">
+      <div className="max-h-[90vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-neutral-800 bg-neutral-900 p-4 sm:p-8">
+        <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
+          <h2 className="text-2xl font-bold text-white sm:text-3xl">
             Detalle del Pedido
           </h2>
 
           <button
             onClick={onClose}
-            className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-500"
+            className="rounded-lg bg-red-600 px-3 py-2 text-sm text-white hover:bg-red-500 sm:px-4"
           >
             Cerrar
           </button>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
-
+        <div className="grid gap-6 md:grid-cols-2 md:gap-8">
           <div className="space-y-4">
+            <h3 className="text-xl font-bold text-yellow-500">Cliente</h3>
 
-            <h3 className="text-xl font-bold text-yellow-500">
-              Cliente
-            </h3>
-
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>Nombre:</strong> {currentOrder.customerName}
             </p>
 
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>Empresa:</strong> {currentOrder.company || "-"}
             </p>
 
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>Email:</strong> {currentOrder.email}
             </p>
 
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>WhatsApp:</strong> {currentOrder.phone}
             </p>
 
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>País:</strong> {currentOrder.country}
             </p>
 
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>Ciudad:</strong> {currentOrder.city}
             </p>
 
-            <p className="text-white">
+            <p className="text-sm text-white sm:text-base">
               <strong>Tipo:</strong> {currentOrder.customerType}
             </p>
-
           </div>
 
           <div>
-
-            <h3 className="mb-4 text-xl font-bold text-yellow-500">
-              Productos
-            </h3>
+            <h3 className="mb-4 text-xl font-bold text-yellow-500">Productos</h3>
 
             <div className="space-y-3">
-
               {currentOrder.items.map((item) => (
                 <div
                   key={item.id}
                   className="rounded-lg border border-neutral-800 bg-black p-4"
                 >
-                  <div className="flex justify-between">
-
-                    <span className="text-white">
+                  <div className="flex items-center justify-between gap-3">
+                    <span className="text-sm text-white sm:text-base">
                       {item.product.name}
                     </span>
 
                     <span className="font-bold text-yellow-500">
                       x{item.quantity}
                     </span>
-
                   </div>
 
-                  <p className="mt-2 text-sm text-neutral-400">
+                  <p className="mt-2 text-xs text-neutral-400 sm:text-sm">
                     US$ {item.price.toFixed(2)}
                   </p>
-
                 </div>
               ))}
-
             </div>
-
           </div>
-
         </div>
 
-        <div className="mt-8 rounded-xl border border-neutral-800 bg-black p-5">
-
-          <h3 className="mb-3 text-xl font-bold text-yellow-500">
-            Comentarios
-          </h3>
-
-          <p className="text-white">
+        <div className="mt-6 rounded-xl border border-neutral-800 bg-black p-4 sm:mt-8 sm:p-5">
+          <h3 className="mb-3 text-xl font-bold text-yellow-500">Comentarios</h3>
+          <p className="text-sm text-white sm:text-base">
             {currentOrder.notes || "Sin comentarios"}
           </p>
-
         </div>
 
-        <div className="mt-8 rounded-xl border border-neutral-800 bg-black p-5">
-
-          <h3 className="mb-4 text-xl font-bold text-yellow-500">
-            Estado del Pedido
-          </h3>
+        <div className="mt-6 rounded-xl border border-neutral-800 bg-black p-4 sm:mt-8 sm:p-5">
+          <h3 className="mb-4 text-xl font-bold text-yellow-500">Estado del Pedido</h3>
 
           <select
             value={status}
             onChange={(e) => setStatus(e.target.value)}
-            className="w-full rounded-lg border border-neutral-700 bg-neutral-900 p-4 text-white"
+            className="w-full rounded-lg border border-neutral-700 bg-neutral-900 p-3 text-sm text-white sm:p-4 sm:text-base"
           >
             <option value="PENDIENTE">Pendiente</option>
             <option value="EN_REVISION">En revisión</option>
@@ -213,13 +189,11 @@ export default function OrderModal({
           <button
             onClick={saveStatus}
             disabled={saving}
-            className="mt-6 w-full rounded-lg bg-yellow-600 py-4 font-bold text-white hover:bg-yellow-500 disabled:opacity-50"
+            className="mt-6 w-full rounded-lg bg-yellow-600 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 sm:py-4"
           >
             {saving ? "Guardando..." : "Guardar Cambios"}
           </button>
-
         </div>
-
       </div>
     </div>
   );

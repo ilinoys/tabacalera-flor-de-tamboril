@@ -3,6 +3,7 @@ import {
   Clock3,
   Package,
   CalendarDays,
+  TrendingUp,
 } from "lucide-react";
 
 import DashboardCard from "../DashboardCard";
@@ -14,6 +15,7 @@ interface Props {
     totalOrders: number;
     pendingOrders: number;
     ordersToday: number;
+    ordersThisMonth: number;
   } | null;
 }
 
@@ -22,8 +24,7 @@ export default function StatsGrid({
   stats,
 }: Props) {
   return (
-    <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-
+    <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-5">
       <DashboardCard
         title="Productos"
         value={loading ? "..." : stats?.totalProducts ?? 0}
@@ -52,6 +53,12 @@ export default function StatsGrid({
         icon={<CalendarDays size={32} />}
       />
 
+      <DashboardCard
+        title="Este mes"
+        value={loading ? "..." : stats?.ordersThisMonth ?? 0}
+        description="Pedidos recibidos este mes"
+        icon={<TrendingUp size={32} />}
+      />
     </div>
   );
 }

@@ -149,8 +149,44 @@ export default function UsersAdmin() {
   }, [query]);
 
   useEffect(() => {
-    void loadUsers();
-  }, [loadUsers]);
+    let active = true;
+
+    async function fetchUsers() {
+      try {
+        const response = await fetch(`/api/admin/users?${query}`, {
+          cache: "no-store",
+        });
+        const data = (await response.json()) as UserResponse;
+
+        if (!response.ok) {
+          throw new Error(data.error ?? "No se pudieron cargar usuarios.");
+        }
+
+        if (active) {
+          setUsers(data.users);
+          setPagination(data.pagination);
+        }
+      } catch (requestError) {
+        if (active) {
+          setError(
+            requestError instanceof Error
+              ? requestError.message
+              : "No se pudieron cargar usuarios."
+          );
+        }
+      } finally {
+        if (active) {
+          setLoading(false);
+        }
+      }
+    }
+
+    void fetchUsers();
+
+    return () => {
+      active = false;
+    };
+  }, [query]);
 
   function changeSort(nextSortBy: SortField) {
     setPage(1);
@@ -297,14 +333,14 @@ export default function UsersAdmin() {
   }
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6 sm:space-y-8">
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-4xl font-bold text-white">
+          <h1 className="text-3xl font-bold text-white sm:text-4xl">
             Administracion de Usuarios
           </h1>
 
-          <p className="mt-2 text-neutral-400">
+          <p className="mt-2 text-sm text-neutral-400 sm:text-base">
             Gestiona accesos, roles, estados y contrasenas del ERP.
           </p>
         </div>
@@ -316,7 +352,7 @@ export default function UsersAdmin() {
             setMessage("");
             setModal({ type: "create" });
           }}
-          className="inline-flex items-center gap-2 rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white transition hover:bg-yellow-500"
+          className="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white transition hover:bg-yellow-500 sm:w-auto"
         >
           <UserPlus size={18} />
           Nuevo usuario
@@ -335,8 +371,8 @@ export default function UsersAdmin() {
         </div>
       )}
 
-      <section className="rounded-2xl border border-neutral-800 bg-neutral-900 p-6">
-        <div className="grid gap-4 xl:grid-cols-[1fr_180px_180px_180px]">
+      <section className="rounded-2xl border border-neutral-800 bg-neutral-900 p-4 sm:p-6">
+        <div className="grid gap-3 sm:gap-4 xl:grid-cols-[1fr_180px_180px_180px]">
           <div className="relative">
             <Search
               size={18}
@@ -349,7 +385,7 @@ export default function UsersAdmin() {
                 setPage(1);
               }}
               placeholder="Buscar por nombre, usuario o correo..."
-              className="w-full rounded-xl border border-neutral-700 bg-black py-3 pl-11 pr-4 text-white outline-none transition focus:border-yellow-500"
+              className="w-full rounded-xl border border-neutral-700 bg-black py-3 pl-11 pr-4 text-sm text-white outline-none transition focus:border-yellow-500 sm:text-base"
             />
           </div>
 
@@ -395,8 +431,98 @@ export default function UsersAdmin() {
         </div>
       </section>
 
-      <section className="overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900">
-        <div className="overflow-x-auto">
+      <section className="rounded-2xl border border-neutral-800 bg-neutral-900">
+        <div className="space-y-3 p-3 md:hidden">
+          {loading ? (
+            <div className="p-6 text-center text-sm text-neutral-400">
+              Cargando usuarios...
+            </div>
+          ) : users.length === 0 ? (
+            <div className="p-6 text-center text-sm text-neutral-400">
+              No hay usuarios registrados.
+            </div>
+          ) : (
+            users.map((user) => (
+              <div
+                key={user.id}
+                className="rounded-xl border border-neutral-800 bg-black p-3"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <p className="font-semibold text-white">
+                      {user.firstName} {user.lastName}
+                    </p>
+                    <p className="mt-1 text-xs text-neutral-400">
+                      {user.username}
+                    </p>
+                  </div>
+
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setError("");
+                        setMessage("");
+                        setModal({ type: "edit", user });
+                      }}
+                      className="rounded-lg border border-neutral-700 p-2 text-neutral-300 transition hover:border-yellow-600 hover:text-yellow-500"
+                      aria-label="Editar usuario"
+                    >
+                      <Edit size={17} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setError("");
+                        setMessage("");
+                        setModal({ type: "reset", user });
+                      }}
+                      className="rounded-lg border border-neutral-700 p-2 text-neutral-300 transition hover:border-yellow-600 hover:text-yellow-500"
+                      aria-label="Restablecer contrasena"
+                    >
+                      <KeyRound size={17} />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => void removeUser(user)}
+                      className="rounded-lg border border-neutral-700 p-2 text-red-300 transition hover:border-red-600 hover:text-red-200"
+                      aria-label="Eliminar usuario"
+                    >
+                      <Trash2 size={17} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
+                  <div>
+                    <p className="text-neutral-500">Correo</p>
+                    <p className="text-white">{user.email}</p>
+                  </div>
+                  <div>
+                    <p className="text-neutral-500">Rol</p>
+                    <span className={`inline-flex rounded-full px-2 py-1 text-[10px] font-bold ${roleClass(user.role)}`}>
+                      {user.role}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-neutral-500">Estado</p>
+                    <span className={`inline-flex rounded-full px-2 py-1 text-[10px] font-bold ${statusClass(user.status)}`}>
+                      {user.status}
+                    </span>
+                  </div>
+                  <div>
+                    <p className="text-neutral-500">Ultimo acceso</p>
+                    <p className="text-neutral-300">{formatDate(user.lastLogin)}</p>
+                  </div>
+                </div>
+              </div>
+            ))
+          )}
+        </div>
+
+        <div className="hidden overflow-x-auto md:block">
           <table className="w-full min-w-[1100px]">
             <thead className="bg-black">
               <tr>
@@ -545,22 +671,22 @@ export default function UsersAdmin() {
           </table>
         </div>
 
-        <div className="flex flex-col gap-4 border-t border-neutral-800 px-6 py-5 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-4 border-t border-neutral-800 px-4 py-4 sm:px-6 md:flex-row md:items-center md:justify-between md:py-5">
           <p className="text-sm text-neutral-400">
             {pagination.total} usuarios encontrados
           </p>
 
-          <div className="flex items-center gap-3">
+          <div className="flex items-center justify-between gap-2 sm:gap-3">
             <button
               type="button"
               disabled={pagination.page <= 1}
               onClick={() => setPage((current) => Math.max(current - 1, 1))}
-              className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl border border-neutral-700 px-3 py-2 text-xs font-semibold text-neutral-300 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-sm"
             >
               Anterior
             </button>
 
-            <span className="text-sm text-neutral-400">
+            <span className="text-xs text-neutral-400 sm:text-sm">
               Pagina {pagination.page} de {pagination.totalPages}
             </span>
 
@@ -572,7 +698,7 @@ export default function UsersAdmin() {
                   Math.min(current + 1, pagination.totalPages)
                 )
               }
-              className="rounded-xl border border-neutral-700 px-4 py-2 text-sm font-semibold text-neutral-300 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50"
+              className="rounded-xl border border-neutral-700 px-3 py-2 text-xs font-semibold text-neutral-300 transition hover:bg-neutral-800 disabled:cursor-not-allowed disabled:opacity-50 sm:px-4 sm:text-sm"
             >
               Siguiente
             </button>
@@ -582,6 +708,7 @@ export default function UsersAdmin() {
 
       {(modal?.type === "create" || modal?.type === "edit") && (
         <UserFormModal
+          key={modal.type === "edit" ? modal.user.id : "create-user"}
           mode={modal.type}
           user={modal.type === "edit" ? modal.user : null}
           saving={saving}

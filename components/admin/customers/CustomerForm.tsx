@@ -119,14 +119,14 @@ export default function CustomerForm({
   }
 
   return (
-    <div className="space-y-5">
+    <div className="space-y-4 sm:space-y-5">
       <input
         value={form.customerName}
         onChange={(e) =>
           update("customerName", e.target.value)
         }
         placeholder="Nombre"
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white placeholder:text-neutral-500 sm:text-base"
       />
 
       <input
@@ -135,7 +135,7 @@ export default function CustomerForm({
           update("company", e.target.value)
         }
         placeholder="Empresa"
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white placeholder:text-neutral-500 sm:text-base"
       />
 
       <input
@@ -144,7 +144,7 @@ export default function CustomerForm({
           update("email", e.target.value)
         }
         placeholder="Correo"
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white placeholder:text-neutral-500 sm:text-base"
       />
 
       <input
@@ -153,7 +153,7 @@ export default function CustomerForm({
           update("phone", e.target.value)
         }
         placeholder="Teléfono"
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white placeholder:text-neutral-500 sm:text-base"
       />
 
       <input
@@ -162,7 +162,7 @@ export default function CustomerForm({
           update("country", e.target.value)
         }
         placeholder="País"
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white placeholder:text-neutral-500 sm:text-base"
       />
 
       <input
@@ -171,7 +171,7 @@ export default function CustomerForm({
           update("city", e.target.value)
         }
         placeholder="Ciudad"
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white placeholder:text-neutral-500 sm:text-base"
       />
 
       <select
@@ -179,7 +179,7 @@ export default function CustomerForm({
         onChange={(e) =>
           update("customerType", e.target.value)
         }
-        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-white"
+        className="w-full rounded-lg border border-neutral-700 bg-neutral-950 p-3 text-sm text-white sm:text-base"
       >
         <option value="PARTICULAR">Particular</option>
         <option value="DISTRIBUIDOR">Distribuidor</option>
@@ -189,13 +189,13 @@ export default function CustomerForm({
       <button
         onClick={saveCustomer}
         disabled={saving}
-        className="w-full rounded-xl bg-yellow-600 py-4 font-bold text-white hover:bg-yellow-500 disabled:opacity-50"
+        className="w-full rounded-xl bg-yellow-600 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 sm:py-4"
       >
         {saving
           ? "Guardando..."
           : editing
-          ? "Actualizar Cliente"
-          : "Guardar Cliente"}
+            ? "Actualizar Cliente"
+            : "Guardar Cliente"}
       </button>
     </div>
   );

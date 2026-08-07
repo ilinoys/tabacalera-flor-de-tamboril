@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
@@ -33,7 +33,6 @@ export default function Header() {
   const userMenuRef = useRef<HTMLDivElement>(null);
   const mobileMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
-  const pathname = usePathname();
   const { user, isAuthenticated, isLoading, logout } = useAuth();
 
   const items = useCartStore((state) => state.items);
@@ -62,11 +61,6 @@ export default function Header() {
 
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
-
-  useEffect(() => {
-    setUserMenuOpen(false);
-    setMobileMenuOpen(false);
-  }, [pathname]);
 
   useEffect(() => {
     function handlePointerDown(event: MouseEvent) {
@@ -106,22 +100,23 @@ export default function Header() {
           : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-4 sm:px-6">
-        <Link href="/" className="flex items-center gap-3">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-3 py-3 sm:px-6 sm:py-4">
+        <Link href="/" className="flex items-center gap-2 sm:gap-3">
           <Image
             src="/images/logo/logo.png"
             alt="Logo"
-            width={55}
-            height={55}
+            width={48}
+            height={48}
             priority
+            className="h-10 w-10 sm:h-[55px] sm:w-[55px]"
           />
 
-          <div>
-            <h1 className="text-lg font-bold text-yellow-500">
+          <div className="min-w-0">
+            <h1 className="text-sm font-bold text-yellow-500 sm:text-lg">
               Tabacalera
             </h1>
 
-            <p className="text-sm text-white">
+            <p className="text-[10px] text-white sm:text-sm">
               Flor De Tamboril
             </p>
           </div>

@@ -145,14 +145,14 @@ export default function ProductForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-8">
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
+    <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-4 sm:p-8">
         <input
           name="name"
           value={product.name}
           onChange={handleChange}
           placeholder="Nombre del producto"
-          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
         />
 
         <textarea
@@ -161,14 +161,14 @@ export default function ProductForm({
           onChange={handleChange}
           placeholder="Descripción"
           rows={5}
-          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
         />
 
         <select
           name="category"
           value={product.category}
           onChange={handleChange}
-          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
         >
           <option>Premium</option>
           <option>Clásica</option>
@@ -181,7 +181,7 @@ export default function ProductForm({
           value={product.price}
           onChange={handleChange}
           placeholder="Precio"
-          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
         />
 
         <input
@@ -190,19 +190,19 @@ export default function ProductForm({
           value={product.stock}
           onChange={handleChange}
           placeholder="Stock"
-          className="w-full rounded-xl border border-neutral-700 bg-black p-4 text-white"
+          className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
         />
       </div>
 
-      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8">
-        <h2 className="mb-6 text-2xl font-bold text-yellow-500">
+      <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-4 sm:p-8">
+        <h2 className="mb-6 text-xl font-bold text-yellow-500 sm:text-2xl">
           Imagen del producto
         </h2>
 
-        <label className="flex min-h-64 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-700 bg-black p-6 text-center transition hover:border-yellow-500">
+        <label className="flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-700 bg-black p-4 text-center transition hover:border-yellow-500 sm:min-h-64 sm:p-6">
           {imagePreview ? (
             <div
-              className="h-64 w-full rounded-xl bg-cover bg-center"
+              className="h-56 w-full rounded-xl bg-cover bg-center sm:h-64"
               style={{
                 backgroundImage: `url(${imagePreview})`,
               }}
@@ -212,11 +212,11 @@ export default function ProductForm({
             <div>
               <ImagePlus className="mx-auto text-yellow-500" size={42} />
 
-              <p className="mt-4 text-lg font-semibold text-white">
+              <p className="mt-4 text-base font-semibold text-white sm:text-lg">
                 Selecciona una imagen
               </p>
 
-              <p className="mt-2 text-neutral-400">
+              <p className="mt-2 text-sm text-neutral-400 sm:text-base">
                 Se subirá a Supabase Storage al guardar
               </p>
             </div>
@@ -239,11 +239,11 @@ export default function ProductForm({
         )}
       </div>
 
-      <div className="flex justify-end gap-4">
+      <div className="flex flex-col-reverse gap-3 sm:flex-row sm:justify-end sm:gap-4">
         <button
           type="button"
           onClick={onSuccess}
-          className="rounded-xl border border-neutral-700 px-6 py-3 text-white"
+          className="w-full rounded-xl border border-neutral-700 px-6 py-3 text-white sm:w-auto"
         >
           Cancelar
         </button>
@@ -251,7 +251,7 @@ export default function ProductForm({
         <button
           type="submit"
           disabled={loading}
-          className="rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50"
+          className="w-full rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 sm:w-auto"
         >
           {loading
             ? selectedImageFile

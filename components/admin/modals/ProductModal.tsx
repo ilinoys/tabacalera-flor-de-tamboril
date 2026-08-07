@@ -26,22 +26,19 @@ export default function ProductModal({
   if (!open) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-8">
-      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-neutral-950 p-8">
-
-        <div className="mb-8 flex items-center justify-between">
-
-          <h1 className="text-3xl font-bold text-yellow-500">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-8">
+      <div className="max-h-[90vh] w-full max-w-5xl overflow-y-auto rounded-2xl bg-neutral-950 p-4 sm:p-8">
+        <div className="mb-6 flex items-center justify-between gap-3 sm:mb-8">
+          <h1 className="text-2xl font-bold text-yellow-500 sm:text-3xl">
             {product ? "Editar Producto" : "Nuevo Producto"}
           </h1>
 
           <button
             onClick={onClose}
-            className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-500"
+            className="rounded-lg bg-red-600 px-3 py-2 text-white hover:bg-red-500 sm:px-4"
           >
             ✕
           </button>
-
         </div>
 
         <ProductForm
@@ -49,7 +46,6 @@ export default function ProductModal({
           product={product}
           onSuccess={onClose}
         />
-
       </div>
     </div>
   );

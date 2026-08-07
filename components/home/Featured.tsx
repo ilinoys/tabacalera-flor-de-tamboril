@@ -6,30 +6,27 @@ export default async function Featured() {
   const featured = await getFeaturedProducts();
 
   return (
-    <section className="bg-black py-20">
-      <div className="mx-auto max-w-7xl px-6">
-        {/* Título */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-yellow-500">
+    <section className="bg-black py-16 sm:py-20">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
+        <div className="mb-8 text-center sm:mb-12">
+          <h2 className="text-2xl font-bold text-yellow-500 sm:text-3xl md:text-4xl">
             Productos Destacados
           </h2>
-          <p className="mt-4 text-neutral-400">
+          <p className="mt-3 text-sm text-neutral-400 sm:mt-4 sm:text-base">
             Nuestros puros más selectos, elegidos para ti.
           </p>
         </div>
 
-        {/* Grid de productos destacados */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {featured.map((product) => (
             <ProductCard key={product.id} product={product} />
           ))}
         </div>
 
-        {/* Botón ver todos */}
-        <div className="mt-12 text-center">
+        <div className="mt-10 text-center sm:mt-12">
           <Link
             href="/tienda"
-            className="inline-block rounded-md border-2 border-yellow-600 px-8 py-3 text-lg font-semibold text-yellow-500 transition hover:bg-yellow-600 hover:text-white"
+            className="inline-block rounded-md border-2 border-yellow-600 px-6 py-3 text-base font-semibold text-yellow-500 transition hover:bg-yellow-600 hover:text-white sm:px-8 sm:text-lg"
           >
             Ver Todos los Productos
           </Link>

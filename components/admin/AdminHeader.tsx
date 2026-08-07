@@ -5,6 +5,7 @@ import {
   CalendarDays,
   LayoutDashboard,
   LogOut,
+  Menu,
   Settings,
   User,
   UserCircle2,
@@ -16,7 +17,15 @@ import { useEffect, useRef, useState } from "react";
 
 import { useAuth } from "@/hooks/useAuth";
 
-export default function AdminHeader() {
+type AdminHeaderProps = {
+  setIsSidebarOpen: React.Dispatch<
+    React.SetStateAction<boolean>
+  >;
+};
+
+export default function AdminHeader({
+  setIsSidebarOpen,
+}: AdminHeaderProps) {
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const userMenuRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
@@ -74,7 +83,16 @@ export default function AdminHeader() {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-3">
+
+  <button
+    type="button"
+    onClick={() => setIsSidebarOpen(true)}
+    className="flex h-11 w-11 items-center justify-center rounded-xl border border-neutral-800 bg-neutral-950 text-white transition hover:border-yellow-600 lg:hidden"
+    aria-label="Abrir menú"
+  >
+    <Menu size={22} />
+  </button>
           <div className="hidden items-center gap-2 rounded-xl border border-neutral-800 bg-neutral-950 px-4 py-2 text-sm text-neutral-300 lg:flex">
             <CalendarDays
               size={18}

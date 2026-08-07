@@ -35,43 +35,36 @@ const features = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="bg-black py-24">
-      <div className="mx-auto max-w-7xl px-6">
-
+    <section className="bg-black py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6">
         <SectionTitle
           subtitle="¿Por qué elegirnos?"
           title="Comprometidos con la excelencia"
           description="La experiencia, la tradición y la calidad nos distinguen."
         />
 
-        <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-4">
-
+        <div className="grid gap-5 sm:gap-6 md:grid-cols-2 xl:grid-cols-4">
           {features.map((feature) => {
             const Icon = feature.icon;
 
             return (
               <div
                 key={feature.title}
-                className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 transition-all duration-300 hover:-translate-y-2 hover:border-yellow-500"
+                className="rounded-2xl border border-neutral-800 bg-neutral-900 p-5 transition-all duration-300 hover:-translate-y-2 hover:border-yellow-500 sm:p-6 lg:p-8"
               >
-                <Icon
-                  size={48}
-                  className="text-yellow-500"
-                />
+                <Icon size={40} className="text-yellow-500 sm:text-[48px]" />
 
-                <h3 className="mt-6 text-2xl font-bold text-white">
+                <h3 className="mt-4 text-xl font-bold text-white sm:mt-6 sm:text-2xl">
                   {feature.title}
                 </h3>
 
-                <p className="mt-4 leading-7 text-neutral-400">
+                <p className="mt-3 text-sm leading-6 text-neutral-400 sm:mt-4 sm:text-base sm:leading-7">
                   {feature.description}
                 </p>
               </div>
             );
           })}
-
         </div>
-
       </div>
     </section>
   );
