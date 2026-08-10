@@ -12,6 +12,9 @@ interface Product {
   stock: number;
   image: string;
   category: string;
+  strength: string;
+  origin: string;
+  size: string;
 }
 
 interface ProductFormProps {
@@ -24,6 +27,9 @@ const emptyProduct = {
   name: "",
   description: "",
   category: "Premium",
+  strength: "",
+  origin: "",
+  size: "",
   price: "",
   stock: "",
   image: "",
@@ -37,6 +43,9 @@ function getInitialProduct(product?: Product | null) {
     name: product.name,
     description: product.description,
     category: product.category,
+    strength: product.strength ?? "",
+    origin: product.origin ?? "",
+    size: product.size ?? "",
     price: product.price.toString(),
     stock: product.stock.toString(),
     image: product.image,
@@ -175,23 +184,76 @@ export default function ProductForm({
           <option>Edición Especial</option>
         </select>
 
-        <input
-          name="price"
-          type="number"
-          value={product.price}
-          onChange={handleChange}
-          placeholder="Precio"
-          className="mb-4 w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
-        />
+        <div className="mb-4 grid gap-4 md:grid-cols-3">
+          <label className="block min-w-0 text-sm font-medium text-neutral-200">
+            <span className="mb-2 block text-sm font-medium text-yellow-500">
+              Fortaleza
+            </span>
+            <input
+              name="strength"
+              value={product.strength}
+              onChange={handleChange}
+              placeholder="Ej: Medio"
+              className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
+            />
+          </label>
 
-        <input
-          name="stock"
-          type="number"
-          value={product.stock}
-          onChange={handleChange}
-          placeholder="Stock"
-          className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
-        />
+          <label className="block min-w-0 text-sm font-medium text-neutral-200">
+            <span className="mb-2 block text-sm font-medium text-yellow-500">
+              Origen
+            </span>
+            <input
+              name="origin"
+              value={product.origin}
+              onChange={handleChange}
+              placeholder="Ej: República Dominicana"
+              className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
+            />
+          </label>
+
+          <label className="block min-w-0 text-sm font-medium text-neutral-200">
+            <span className="mb-2 block text-sm font-medium text-yellow-500">
+              Vitola
+            </span>
+            <input
+              name="size"
+              value={product.size}
+              onChange={handleChange}
+              placeholder='Ej: 5" x 50'
+              className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
+            />
+          </label>
+        </div>
+
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="block min-w-0 text-sm font-medium text-neutral-200">
+            <span className="mb-2 block text-sm font-medium text-yellow-500">
+              Precio
+            </span>
+            <input
+              name="price"
+              type="number"
+              value={product.price}
+              onChange={handleChange}
+              placeholder="Precio"
+              className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
+            />
+          </label>
+
+          <label className="block min-w-0 text-sm font-medium text-neutral-200">
+            <span className="mb-2 block text-sm font-medium text-yellow-500">
+              Stock
+            </span>
+            <input
+              name="stock"
+              type="number"
+              value={product.stock}
+              onChange={handleChange}
+              placeholder="Stock"
+              className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
+            />
+          </label>
+        </div>
       </div>
 
       <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-4 sm:p-8">
