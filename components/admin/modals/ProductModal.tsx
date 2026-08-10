@@ -1,6 +1,9 @@
 "use client";
 
+import type { ComponentProps } from "react";
 import ProductForm from "../products/form/ProductForm";
+
+type ProductFormProduct = NonNullable<ComponentProps<typeof ProductForm>["product"]>;
 
 interface Product {
   id: string;
@@ -10,6 +13,9 @@ interface Product {
   stock: number;
   image: string;
   category: string;
+  strength?: string;
+  origin?: string;
+  size?: string;
 }
 
 interface ProductModalProps {
@@ -24,6 +30,15 @@ export default function ProductModal({
   product,
 }: ProductModalProps) {
   if (!open) return null;
+
+  const formProduct: ProductFormProduct | null = product
+    ? {
+        ...product,
+        strength: product.strength ?? "",
+        origin: product.origin ?? "",
+        size: product.size ?? "",
+      }
+    : null;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-3 sm:p-8">
@@ -43,7 +58,7 @@ export default function ProductModal({
 
         <ProductForm
           key={product?.id ?? "new-product"}
-          product={product}
+          product={formProduct}
           onSuccess={onClose}
         />
       </div>
