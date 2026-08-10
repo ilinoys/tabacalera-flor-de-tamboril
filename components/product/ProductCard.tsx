@@ -14,13 +14,13 @@ interface Props {
 export default function ProductCard({ product }: Props) {
   return (
     <div className="group overflow-hidden rounded-2xl border border-neutral-800 bg-neutral-900 transition duration-300 hover:border-yellow-500 hover:shadow-2xl">
-      <div className="relative overflow-hidden">
+      <div className="relative overflow-hidden bg-black">
         <Image
           src={product.image}
           alt={product.name}
           width={600}
           height={600}
-          className="h-80 w-full object-cover transition duration-500 sm:group-hover:scale-110"
+          className="h-80 w-full object-contain transition duration-500"
         />
 
         <div className="absolute inset-0 flex items-end justify-center gap-4 bg-black/30 p-4 opacity-100 transition duration-300 sm:items-center sm:bg-black/60 sm:opacity-0 sm:group-hover:opacity-100">

@@ -118,7 +118,7 @@ export default function ProductTable({
                alt={product.name}
                width={72}
                height={72}
-               className="h-16 w-16 rounded-lg object-cover"
+               className="h-16 w-16 rounded-lg bg-black object-contain"
              />
 
              <div className="min-w-0 flex-1">
@@ -184,7 +184,7 @@ export default function ProductTable({
                    alt={product.name}
                    width={70}
                    height={70}
-                   className="h-16 w-16 rounded-lg object-cover"
+                   className="h-16 w-16 rounded-lg bg-black object-contain"
                  />
                </td>
 

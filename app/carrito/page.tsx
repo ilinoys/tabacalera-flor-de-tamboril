@@ -73,7 +73,7 @@ export default function CartPage() {
                         alt={item.name}
                         width={140}
                         height={140}
-                        className="h-36 w-full rounded-xl object-cover sm:h-[140px] sm:w-[140px]"
+                        className="h-36 w-full rounded-xl bg-black object-contain sm:h-[140px] sm:w-[140px]"
                       />
 
                       <div className="flex flex-1 flex-col justify-between">

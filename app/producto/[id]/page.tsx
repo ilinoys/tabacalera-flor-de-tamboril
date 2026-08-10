@@ -36,7 +36,7 @@ export default async function ProductPage({ params }: Props) {
             alt={product.name}
             width={700}
             height={700}
-            className="w-full rounded-2xl object-cover"
+            className="h-auto w-full rounded-2xl bg-black object-contain"
           />
 
           <div>

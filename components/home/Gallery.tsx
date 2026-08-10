@@ -32,13 +32,13 @@ export default function Gallery() {
 
         <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {images.map((image, index) => (
-            <div key={index} className="overflow-hidden rounded-2xl">
+            <div key={index} className="overflow-hidden rounded-2xl bg-black">
               <Image
                 src={image}
                 alt={`Galería ${index + 1}`}
                 width={600}
                 height={400}
-                className="h-56 w-full object-cover transition duration-500 hover:scale-110 sm:h-64 lg:h-80"
+                className="h-56 w-full object-contain transition duration-500 sm:h-64 lg:h-80"
               />
             </div>
           ))}

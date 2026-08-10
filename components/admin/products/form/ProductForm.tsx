@@ -264,7 +264,7 @@ export default function ProductForm({
         <label className="flex min-h-56 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-neutral-700 bg-black p-4 text-center transition hover:border-yellow-500 sm:min-h-64 sm:p-6">
           {imagePreview ? (
             <div
-              className="h-56 w-full rounded-xl bg-cover bg-center sm:h-64"
+              className="h-56 w-full rounded-xl bg-contain bg-center bg-no-repeat sm:h-64"
               style={{
                 backgroundImage: `url(${imagePreview})`,
               }}
