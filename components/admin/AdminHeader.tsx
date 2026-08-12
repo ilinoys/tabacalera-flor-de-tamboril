@@ -186,14 +186,14 @@ export default function AdminHeader({
                   Mi perfil
                 </Link>
 
-                <button
-                  type="button"
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-left text-neutral-400"
-                  title="Proximamente"
+                <Link
+                  href="/admin/configuracion"
+                  onClick={() => setUserMenuOpen(false)}
+                  className="flex items-center gap-3 rounded-lg px-3 py-2 transition hover:bg-neutral-800 hover:text-yellow-500"
                 >
                   <Settings size={17} />
-                  Configuracion
-                </button>
+                  Configuración
+                </Link>
 
                 <button
                   type="button"

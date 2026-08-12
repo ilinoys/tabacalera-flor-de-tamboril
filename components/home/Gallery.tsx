@@ -1,15 +1,64 @@
+import { readdir, stat } from "node:fs/promises";
+import path from "node:path";
+
 import Image from "next/image";
+import { connection } from "next/server";
 
-const images = [
-  "/images/gallery/galeria1.jpg",
-  "/images/gallery/galeria2.jpg",
-  "/images/gallery/galeria3.jpg",
-  "/images/gallery/galeria4.jpg",
-  "/images/gallery/galeria5.jpg",
-  "/images/gallery/galeria6.jpg",
-];
+const galleryDirectory = path.join(
+  process.cwd(),
+  "public",
+  "images",
+  "gallery"
+);
+const supportedExtensions = new Set([
+  ".jpg",
+  ".jpeg",
+  ".png",
+  ".webp",
+  ".avif",
+]);
 
-export default function Gallery() {
+interface GalleryImage {
+  src: string;
+  version: number;
+}
+
+async function getGalleryImages() {
+  const files = await readdir(galleryDirectory);
+  const imageFiles = files
+    .filter((file) =>
+      supportedExtensions.has(path.extname(file).toLowerCase())
+    )
+    .sort((first, second) =>
+      first.localeCompare(second, "es", {
+        numeric: true,
+        sensitivity: "base",
+      })
+    );
+
+  return Promise.all(
+    imageFiles.map(async (file) => {
+      const fileStats = await stat(
+        path.join(galleryDirectory, file)
+      );
+
+      return {
+        src: `/images/gallery/${file}`,
+        version: Math.trunc(fileStats.mtimeMs),
+      };
+    })
+  );
+}
+
+function getImageSrc(image: GalleryImage) {
+  return `${image.src}?v=${image.version}`;
+}
+
+export default async function Gallery() {
+  await connection();
+
+  const images = await getGalleryImages();
+
   return (
     <section
       id="galeria"
@@ -32,9 +81,9 @@ export default function Gallery() {
 
         <div className="mt-10 grid grid-cols-1 gap-4 sm:mt-12 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3">
           {images.map((image, index) => (
-            <div key={index} className="overflow-hidden rounded-2xl bg-black">
+            <div key={image.src} className="overflow-hidden rounded-2xl bg-black">
               <Image
-                src={image}
+                src={getImageSrc(image)}
                 alt={`Galería ${index + 1}`}
                 width={600}
                 height={400}

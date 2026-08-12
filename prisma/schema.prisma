@@ -101,40 +101,56 @@ model QuotationItem {
 }
 
 model CompanySettings {
-  id              String    @id @default(cuid())
-  companyName     String
-  slogan          String?
-  logo            String?
-  rnc             String?
-  address         String
-  city            String
-  country         String
-  phone           String
-  mobile          String
-  email           String
-  website         String?
-  currency        Currency  @default(USD)
-  defaultIncoterm Incoterm?
-  paymentTerms    String?
-  deliveryTime    String?
-  language        String    @default("es")
-  timezone        String    @default("America/Santo_Domingo")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
-  destinationPort String?
-  exportCountry   String?
-  exportPort      String?
-  pdfFooter       String?
-  primaryColor    String?   @default("#D4AF37")
-  secondaryColor  String?   @default("#000000")
-  senderEmail     String?
-  senderName      String?
-  showLogo        Boolean   @default(true)
-  showSignature   Boolean   @default(true)
-  showStamp       Boolean   @default(true)
-  whatsapp        String?
-  whatsappMessage String?
-  exchangeRate    Float     @default(61.5)
+  id                  String    @id @default(cuid())
+  companyName         String
+  slogan              String?
+  logo                String?
+  rnc                 String?
+  address             String
+  city                String
+  country             String
+  phone               String
+  mobile              String
+  email               String
+  website             String?
+  currency            Currency  @default(USD)
+  defaultIncoterm     Incoterm?
+  paymentTerms        String?
+  deliveryTime        String?
+  language            String    @default("es")
+  timezone            String    @default("America/Santo_Domingo")
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+  destinationPort     String?
+  exportCountry       String?
+  exportPort          String?
+  pdfFooter           String?
+  primaryColor        String?   @default("#D4AF37")
+  secondaryColor      String?   @default("#000000")
+  senderEmail         String?
+  senderName          String?
+  showLogo            Boolean   @default(true)
+  showSignature       Boolean   @default(true)
+  showStamp           Boolean   @default(true)
+  whatsapp            String?
+  whatsappMessage     String?
+  exchangeRate        Float     @default(61.5)
+}
+
+model RawMaterial {
+  id           String            @id @default(cuid())
+  code         String            @unique
+  name         String
+  description  String?
+  category     String
+  unit         String
+  currentStock Float
+  minimumStock Float
+  cost         Float
+  supplier     String?
+  status       RawMaterialStatus @default(ACTIVE)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
 }
 
 model User {
@@ -182,6 +198,11 @@ enum Currency {
   USD
   EUR
   DOP
+}
+
+enum RawMaterialStatus {
+  ACTIVE
+  INACTIVE
 }
 
 enum Incoterm {

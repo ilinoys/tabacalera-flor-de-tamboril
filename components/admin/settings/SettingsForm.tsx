@@ -144,7 +144,10 @@ export default function SettingsForm() {
     }));
   }
 
-  async function save() {
+  async function save(
+    settings: Settings = form,
+    successMessage = "Configuración guardada correctamente."
+  ) {
     try {
       setSaving(true);
 
@@ -153,7 +156,7 @@ export default function SettingsForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(settings),
       });
 
       const result = await response.json();
@@ -162,7 +165,7 @@ export default function SettingsForm() {
         throw new Error(result.error ?? "No se pudo guardar.");
       }
 
-      alert("Configuración guardada correctamente.");
+      alert(successMessage);
     } catch (error) {
       console.error(error);
 
@@ -210,7 +213,7 @@ export default function SettingsForm() {
         form={form}
         update={update}
         saving={saving}
-        onSave={save}
+        onSave={() => save()}
       />
 
       <ExportCard
@@ -240,7 +243,7 @@ export default function SettingsForm() {
 
       <div className="flex justify-end">
         <button
-          onClick={save}
+          onClick={() => save()}
           disabled={saving}
           className="w-full rounded-xl bg-yellow-600 px-6 py-3 font-bold text-white hover:bg-yellow-500 disabled:opacity-50 sm:w-auto sm:px-8 sm:py-4"
         >

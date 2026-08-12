@@ -12,6 +12,15 @@ const nextConfig: NextConfig = {
   ],
 
   images: {
+    localPatterns: [
+      {
+        pathname: "/images/gallery/**",
+      },
+      {
+        pathname: "/images/**",
+        search: "",
+      },
+    ],
     remotePatterns: supabaseStorageHost
       ? [
           {
