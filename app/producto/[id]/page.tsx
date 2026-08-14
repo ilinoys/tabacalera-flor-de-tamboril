@@ -67,7 +67,7 @@ export default async function ProductPage({ params }: Props) {
             </div>
 
             <h2 className="mt-10 text-4xl font-bold text-yellow-500">
-              US$ {product.price}
+              RD$ {product.price}
             </h2>
 
             <AddToCartButton

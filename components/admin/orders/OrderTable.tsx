@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { Trash2 } from "lucide-react";
 import OrderModal from "./OrderModal";
 
 interface OrderItem {
@@ -77,6 +78,90 @@ export default function OrderTable() {
     setSelectedOrder(null);
   }
 
+  async function deleteOrder(id: string) {
+    const confirmed = confirm(
+      "¿Seguro que deseas eliminar este pedido? Esta acción no se puede deshacer."
+    );
+
+    if (!confirmed) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/pedidos/${id}`, {
+        method: "DELETE",
+      });
+
+      if (!res.ok) {
+        if (res.status === 404) {
+          alert("Pedido no encontrado");
+          return;
+        }
+
+        const err = await res.json().catch(() => null);
+        const message = err?.error || "Error al eliminar pedido";
+        alert(message);
+        return;
+      }
+
+      const data = await res.json().catch(() => null);
+
+      if (!data || data.success !== true) {
+        alert(data?.error || "Error al eliminar pedido");
+        return;
+      }
+
+      // Remove from local state immediately
+      setOrders((prev) => prev.filter((o) => o.id !== id));
+
+      alert("Pedido eliminado correctamente");
+    } catch (error) {
+      console.error(error);
+      alert("Error al eliminar pedido");
+    }
+  }
+
+  function sendWhatsApp(order: Order) {
+    try {
+      const lines: string[] = [];
+
+      lines.push("🔔 NUEVO PEDIDO");
+      lines.push("");
+
+      lines.push(`Cliente: ${order.customerName ?? "-"}`);
+      lines.push(`País: ${order.country ?? "-"}`);
+      lines.push(`Teléfono: ${order.phone ?? "-"}`);
+      lines.push(`Fecha: ${new Date(order.createdAt).toLocaleDateString()}`);
+      lines.push("");
+
+      lines.push("Productos:");
+
+      let total = 0;
+
+      for (const it of order.items || []) {
+        const name = it.product?.name ?? "Producto";
+        const qty = it.quantity ?? 0;
+        const price = typeof it.price === "number" ? it.price.toFixed(2) : String(it.price);
+
+        lines.push(`• ${name} × ${qty} — ${price}`);
+
+        total += (Number(it.price) || 0) * (Number(it.quantity) || 0);
+      }
+
+      lines.push("");
+      lines.push(`Total: ${total.toFixed(2)}`);
+      lines.push(`Estado: ${order.status ?? "-"}`);
+
+      const message = lines.join("\n");
+      const url = `https://wa.me/?text=${encodeURIComponent(message)}`;
+
+      window.open(url, "_blank", "noopener,noreferrer");
+    } catch (error) {
+      console.error(error);
+      alert("No se pudo preparar el mensaje de WhatsApp");
+    }
+  }
+
   if (loading) {
     return (
       <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-8 text-center text-white">
@@ -100,12 +185,30 @@ export default function OrderTable() {
                   <p className="mt-1 text-xs text-neutral-400">{order.email}</p>
                 </div>
 
-                <button
-                  onClick={() => openOrder(order)}
-                  className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500"
-                >
-                  Ver
-                </button>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => openOrder(order)}
+                    className="rounded-lg bg-blue-600 px-3 py-2 text-sm font-medium text-white hover:bg-blue-500"
+                  >
+                    Ver
+                  </button>
+
+                  <button
+                    onClick={() => sendWhatsApp(order)}
+                    className="ml-2 rounded-lg bg-green-600 px-3 py-2 text-sm font-medium text-white hover:bg-green-500"
+                    aria-label={`WhatsApp ${order.customerName}`}
+                  >
+                    WhatsApp
+                  </button>
+
+                  <button
+                    onClick={() => void deleteOrder(order.id)}
+                    className="ml-2 rounded-lg bg-red-600 px-3 py-2 text-sm font-medium text-white hover:bg-red-500 flex items-center gap-2"
+                  >
+                    <Trash2 size={16} />
+                    Eliminar
+                  </button>
+                </div>
               </div>
 
               <div className="mt-3 grid grid-cols-2 gap-2 text-sm">
@@ -186,12 +289,30 @@ export default function OrderTable() {
                     {new Date(order.createdAt).toLocaleDateString()}
                   </td>
                   <td className="p-4 text-center">
-                    <button
-                      onClick={() => openOrder(order)}
-                      className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+                    <div className="flex items-center justify-center gap-2">
+                      <button
+                        onClick={() => openOrder(order)}
+                        className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-500"
+                      >
+                        Ver
+                      </button>
+
+                      <button
+                      onClick={() => sendWhatsApp(order)}
+                      className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-500"
+                      aria-label={`WhatsApp ${order.customerName}`}
                     >
-                      Ver
+                      WhatsApp
+                      </button>
+
+                    <button
+                      onClick={() => void deleteOrder(order.id)}
+                      className="rounded-lg bg-red-600 px-4 py-2 text-white hover:bg-red-500 flex items-center gap-2"
+                    >
+                      <Trash2 size={16} />
+                      Eliminar
                     </button>
+                    </div>
                   </td>
                 </tr>
               ))}

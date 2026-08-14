@@ -88,7 +88,7 @@ export default function CartPage() {
                           </p>
 
                           <p className="mt-3 text-xl font-bold text-yellow-500">
-                            US$ {item.price.toFixed(2)}
+                            RD$ {item.price.toFixed(2)}
                           </p>
                         </div>
 
@@ -144,7 +144,7 @@ export default function CartPage() {
                     <span>Total</span>
 
                     <span className="font-bold text-yellow-500">
-                      US$ {totalPrice().toFixed(2)}
+                      RD$ {totalPrice().toFixed(2)}
                     </span>
                   </div>
 

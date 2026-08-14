@@ -41,6 +41,11 @@ export default function RequestQuoteForm() {
 
     setLoading(true);
 
+    // Abrir una pestaña vacía de forma inmediata en la acción del usuario
+    // para evitar que el navegador bloquee el popup cuando hagamos la
+    // navegación a wa.me después de crear el pedido.
+    const win = typeof window !== "undefined" ? window.open("", "_blank", "noopener,noreferrer") : null;
+
     try {
       const response = await fetch("/api/pedidos", {
         method: "POST",
@@ -61,8 +66,90 @@ export default function RequestQuoteForm() {
         throw new Error("Error al enviar la solicitud");
       }
 
+      // Pedido creado correctamente
+      // Intentar obtener el número de WhatsApp desde /api/configuracion
+      let waNumber: string | null = null;
+
+      try {
+        const cfgRes = await fetch("/api/configuracion");
+        if (cfgRes.ok) {
+          const cfg = await cfgRes.json();
+          if (cfg && cfg.whatsapp) {
+            waNumber = String(cfg.whatsapp);
+          }
+        }
+      } catch (cfgErr) {
+        // No consideramos esto un fallo crítico: el pedido ya está creado.
+        console.error("No se pudo obtener configuración:", cfgErr);
+      }
+
+      // Construir el mensaje exactamente con los datos enviados
+      const total = items.reduce((sum, it) => sum + Number(it.price) * Number(it.quantity), 0);
+
+      const lines: string[] = [];
+      lines.push("🔔 NUEVO PEDIDO");
+      lines.push(`Cliente: ${form.customerName}`);
+      lines.push(`Empresa: ${form.company || ""}`);
+      lines.push(`Correo: ${form.email}`);
+      lines.push(`Teléfono: ${form.phone}`);
+      lines.push(`País: ${form.country}`);
+      lines.push(`Ciudad: ${form.city}`);
+      lines.push(`Tipo de cliente: ${form.customerType}`);
+      lines.push(`Fecha: ${new Date().toLocaleString()}`);
+      lines.push("");
+      lines.push("Productos:");
+
+      for (const it of items) {
+        // Asumir que item tiene name, quantity y price
+        const itemTyped = it as { name?: string; productName?: string; id?: string; quantity?: number; price?: number };
+        const name = itemTyped.name || itemTyped.productName || itemTyped.id || "";
+        const qty = Number(it.quantity);
+        const price = Number(it.price);
+        lines.push(`• ${name} × ${qty} — RD$ ${price.toFixed(2)}`);
+      }
+
+      lines.push("");
+      lines.push(`Total: RD$ ${total.toFixed(2)}`);
+      lines.push("");
+      lines.push("Comentarios:");
+      lines.push(form.notes || "");
+      lines.push("");
+      lines.push("Estado: PENDIENTE");
+
+      const message = lines.join("\n");
+      const encoded = encodeURIComponent(message);
+
+      // Preparar la URL de wa.me; limpiar el número dejando solo dígitos
+      let waUrl: string;
+
+      if (waNumber) {
+        const digits = waNumber.replace(/\D/g, "");
+        if (digits.length > 0) {
+          waUrl = `https://wa.me/${digits}?text=${encoded}`;
+        } else {
+          waUrl = `https://wa.me/?text=${encoded}`;
+        }
+      } else {
+        waUrl = `https://wa.me/?text=${encoded}`;
+      }
+
+      // Navegar la ventana ya abierta a wa.me para evitar bloqueador
+      if (win) {
+        try {
+          win.location.href = waUrl;
+        } catch (navErr) {
+          // Si por alguna razón no se puede asignar location, abrir nueva ventana como fallback
+          console.error("No se pudo navegar la ventana abierta:", navErr);
+          window.open(waUrl, "_blank", "noopener,noreferrer");
+        }
+      } else {
+        // Si la ventana no fue creada (bloqueada), intentar abrir directamente
+        window.open(waUrl, "_blank", "noopener,noreferrer");
+      }
+
       alert("✅ Solicitud enviada correctamente.");
 
+      // Mantener comportamiento actual: limpiar carrito y formulario
       clearCart();
 
       setForm({
@@ -77,6 +164,13 @@ export default function RequestQuoteForm() {
       });
     } catch (error) {
       console.error(error);
+      // Si hubo un error al crear el pedido, cerrar la ventana abierta y mostrar error
+      try {
+        win?.close();
+      } catch {
+        // ignore
+      }
+
       alert("❌ No se pudo enviar la solicitud.");
     } finally {
       setLoading(false);

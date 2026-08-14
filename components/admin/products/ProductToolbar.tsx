@@ -4,10 +4,14 @@ import { Search } from "lucide-react";
 
 interface ProductToolbarProps {
   onNewProduct: () => void;
+  onSearch?: (value: string) => void;
+  search?: string;
 }
 
 export default function ProductToolbar({
   onNewProduct,
+  onSearch,
+  search,
 }: ProductToolbarProps) {
   return (
     <div className="mb-6 flex flex-col gap-3 sm:gap-4 lg:mb-8 lg:flex-row lg:items-center lg:justify-between">
@@ -20,6 +24,8 @@ export default function ProductToolbar({
         <input
           type="text"
           placeholder="Buscar producto..."
+          value={search ?? ""}
+          onChange={(e) => onSearch?.(e.target.value)}
           className="w-full rounded-xl border border-neutral-700 bg-neutral-900 py-3 pl-11 pr-4 text-sm text-white outline-none transition placeholder:text-neutral-500 focus:border-yellow-500 sm:text-base"
         />
       </div>

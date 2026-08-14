@@ -20,6 +20,7 @@ export default function ProductosPage() {
   const [openModal, setOpenModal] = useState(false);
   const [selectedProduct, setSelectedProduct] =
     useState<Product | null>(null);
+  const [search, setSearch] = useState("");
 
   function handleNewProduct() {
     setSelectedProduct(null);
@@ -44,10 +45,13 @@ export default function ProductosPage() {
 
       <ProductToolbar
         onNewProduct={handleNewProduct}
+        onSearch={setSearch}
+        search={search}
       />
 
       <ProductTable
         onEdit={handleEditProduct}
+        search={search}
       />
 
       <ProductModal

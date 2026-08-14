@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import { Pencil, Trash2 } from "lucide-react";
 
@@ -12,10 +12,15 @@ interface Product {
   stock: number;
   image: string;
   category: string;
+  fortaleza?: string;
+  origen?: string;
+  tamaño?: string;
+  vitola?: string;
 }
 
 interface ProductTableProps {
   onEdit: (product: Product) => void;
+  search?: string;
 }
 
 async function fetchProducts() {
@@ -25,9 +30,36 @@ async function fetchProducts() {
 
 export default function ProductTable({
   onEdit,
+  search,
 }: ProductTableProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const searchLower = (search ?? "").trim().toLowerCase();
+
+  const filteredProducts = useMemo(() => {
+    return products.filter((p) => {
+      if (!searchLower) return true;
+
+      const name = (p.name || "").toLowerCase();
+      const category = (p.category || "").toLowerCase();
+      const description = (p.description || "").toLowerCase();
+      const fortaleza = (p.fortaleza || "").toLowerCase();
+      const origen = (p.origen || "").toLowerCase();
+      const tamaño = (p.tamaño || "").toLowerCase();
+      const vitola = (p.vitola || "").toLowerCase();
+
+      return (
+        name.includes(searchLower) ||
+        category.includes(searchLower) ||
+        description.includes(searchLower) ||
+        fortaleza.includes(searchLower) ||
+        origen.includes(searchLower) ||
+        tamaño.includes(searchLower) ||
+        vitola.includes(searchLower)
+      );
+    });
+  }, [products, searchLower]);
 
   async function loadProducts() {
     try {
@@ -107,7 +139,7 @@ export default function ProductTable({
   return (
    <div className="rounded-2xl border border-neutral-800 bg-neutral-900">
      <div className="space-y-3 p-3 md:hidden">
-       {products.map((product) => (
+       {filteredProducts.map((product) => (
          <div
            key={product.id}
            className="rounded-xl border border-neutral-800 bg-black p-3"
@@ -145,16 +177,16 @@ export default function ProductTable({
                </div>
 
                <p className="mt-1 text-xs text-neutral-400">{product.category}</p>
-               <p className="mt-2 text-sm text-yellow-500">US$ {product.price}</p>
+               <p className="mt-2 text-sm text-yellow-500">RD$ {product.price}</p>
                <p className="mt-1 text-sm text-neutral-300">Stock: {product.stock}</p>
              </div>
            </div>
          </div>
        ))}
 
-       {products.length === 0 && (
+       {filteredProducts.length === 0 && (
          <div className="p-6 text-center text-sm text-neutral-400">
-           No hay productos registrados.
+           No se encontraron productos.
          </div>
        )}
      </div>
@@ -173,7 +205,7 @@ export default function ProductTable({
          </thead>
 
          <tbody>
-           {products.map((product) => (
+           {filteredProducts.map((product) => (
              <tr
                key={product.id}
                className="border-t border-neutral-800 hover:bg-neutral-800/40"
@@ -197,7 +229,7 @@ export default function ProductTable({
                </td>
 
                <td className="p-4 text-yellow-500">
-                 US$ {product.price}
+                 RD$ {product.price}
                </td>
 
                <td className="p-4 text-white">
@@ -224,13 +256,13 @@ export default function ProductTable({
              </tr>
            ))}
 
-           {products.length === 0 && (
+           {filteredProducts.length === 0 && (
              <tr>
                <td
                  colSpan={6}
                  className="p-8 text-center text-neutral-400"
                >
-                 No hay productos registrados.
+                 No se encontraron productos.
                </td>
              </tr>
            )}

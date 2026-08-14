@@ -161,3 +161,11 @@ export async function updateOrderStatus(
     },
   });
 }
+
+export async function deleteOrder(id: string) {
+  return prisma.order.delete({
+    where: {
+      id,
+    },
+  });
+}
