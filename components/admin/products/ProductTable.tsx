@@ -21,6 +21,7 @@ interface Product {
 interface ProductTableProps {
   onEdit: (product: Product) => void;
   search?: string;
+  reloadSignal?: number;
 }
 
 async function fetchProducts() {
@@ -31,6 +32,7 @@ async function fetchProducts() {
 export default function ProductTable({
   onEdit,
   search,
+  reloadSignal,
 }: ProductTableProps) {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,6 +129,32 @@ export default function ProductTable({
       cancelled = true;
     };
   }, []);
+
+  // Reload when parent signals an import happened
+  useEffect(() => {
+    if (reloadSignal === undefined) return;
+
+    let cancelled = false;
+
+    async function reload() {
+      setLoading(true);
+      try {
+        const data = await fetchProducts();
+        if (!cancelled) setProducts(data);
+      } catch (error) {
+        console.error(error);
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    }
+
+    void reload();
+
+    return () => {
+      cancelled = true;
+    };
+    // reloadSignal is intentionally the only dependency to trigger reloads from parent
+  }, [reloadSignal]);
 
   if (loading) {
   return (

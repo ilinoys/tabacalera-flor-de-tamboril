@@ -15,6 +15,7 @@ interface Product {
   strength: string;
   origin: string;
   size: string;
+  featured?: boolean;
 }
 
 interface ProductFormProps {
@@ -33,6 +34,7 @@ const emptyProduct = {
   price: "",
   stock: "",
   image: "",
+  featured: false,
 };
 
 function getInitialProduct(product?: Product | null) {
@@ -49,6 +51,7 @@ function getInitialProduct(product?: Product | null) {
     price: product.price.toString(),
     stock: product.stock.toString(),
     image: product.image,
+    featured: product.featured ?? false,
   };
 }
 
@@ -75,9 +78,12 @@ export default function ProductForm({
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
     >
   ) {
+    const target = e.target as HTMLInputElement;
+    const value = target.type === "checkbox" ? target.checked : target.value;
+
     setProduct((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [target.name]: value,
     }));
   }
 
@@ -239,7 +245,7 @@ export default function ProductForm({
               className="w-full rounded-xl border border-neutral-700 bg-black p-3 text-sm text-white placeholder:text-neutral-500 sm:p-4 sm:text-base"
             />
           </label>
-
+ 
           <label className="block min-w-0 text-sm font-medium text-neutral-200">
             <span className="mb-2 block text-sm font-medium text-yellow-500">
               Stock
@@ -254,6 +260,20 @@ export default function ProductForm({
             />
           </label>
         </div>
+
+       <div className="mt-4 flex items-center gap-3">
+         <input
+           id="featured"
+           name="featured"
+           type="checkbox"
+           checked={!!product.featured}
+           onChange={handleChange}
+           className="h-4 w-4 rounded border-neutral-700 bg-black text-yellow-500"
+         />
+         <label htmlFor="featured" className="text-sm font-medium text-neutral-200">
+           Producto destacado
+         </label>
+       </div>
       </div>
 
       <div className="rounded-2xl border border-neutral-800 bg-neutral-900 p-4 sm:p-8">
