@@ -358,8 +358,9 @@ export default function ImportProductsModal({
           </button>
         </div>
 
-        <div className="space-y-5 p-4 sm:p-6">
-          <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col h-full max-h-[82vh]">
+          <div className="space-y-5 p-4 sm:p-6">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
             <div className="flex flex-wrap gap-3">
               <button
                 type="button"
@@ -426,10 +427,12 @@ export default function ImportProductsModal({
               Leyendo archivo y validando filas...
             </div>
           )}
-
+ 
           {!isLoading && previewRows.length > 0 && (
-            <div className="overflow-x-auto rounded-xl border border-neutral-800">
-              <table className="min-w-[1100px] w-full text-left text-sm">
+            <div className="rounded-xl border border-neutral-800 bg-neutral-900">
+              <div className="overflow-x-auto">
+                <div className="max-h-[55vh] sm:max-h-[60vh] overflow-y-auto">
+                  <table className="min-w-[1100px] w-full text-left text-sm">
                 <thead className="bg-neutral-900 text-yellow-500">
                   <tr>
                     <th className="p-3">Estado</th>
@@ -483,9 +486,11 @@ export default function ImportProductsModal({
                   })}
                 </tbody>
               </table>
+                </div>
+              </div>
             </div>
           )}
-
+ 
           <div className="flex flex-col gap-3 border-t border-neutral-800 pt-4 sm:flex-row sm:items-center sm:justify-between">
             <button
               type="button"
@@ -494,7 +499,7 @@ export default function ImportProductsModal({
             >
               Cancelar
             </button>
-
+ 
             <div className="flex items-center gap-3">
               <button
                 type="button"
@@ -504,12 +509,12 @@ export default function ImportProductsModal({
               >
                 {isImporting ? "Importando..." : canImport ? `Importar ${summary.validRows} productos` : "Importación pendiente de conexión con el servidor."}
               </button>
-
+ 
               {isImporting && (
                 <div className="text-sm text-neutral-300">Procesando...</div>
               )}
             </div>
-
+ 
             {importError && (
               <div className="mt-3 rounded-xl border border-red-700 bg-red-950/30 p-3 text-sm text-red-200">
                 {importError}
@@ -519,5 +524,6 @@ export default function ImportProductsModal({
         </div>
       </div>
     </div>
+  </div>
   );
 }
